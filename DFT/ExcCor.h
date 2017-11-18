@@ -23,7 +23,7 @@ namespace DFT {
 				const double ro = n(i, 0).real();
 
 				// exchange
-				res(i, 0) = -3. / 4. * pow(3. / M_PI * ro, 1. / 3.);
+				res(i, 0) = -3. / 4. * pow(3. / M_PI * ro, 1. / 3.); // Dirac exchange
 
 				// correlation
 				const double rs = pow(3. / (4. * M_PI * ro), 1. / 3.);

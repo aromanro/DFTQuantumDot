@@ -62,7 +62,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	BOOL bNameValid;
 
 	if (!m_wndMenuBar.Create(this))
 	{
@@ -83,7 +82,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 
 	CString strToolBarName;
-	bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
+	BOOL bNameValid = strToolBarName.LoadString(IDS_TOOLBAR_STANDARD);
 	ASSERT(bNameValid);
 	m_wndToolBar.SetWindowText(strToolBarName);
 
@@ -347,7 +346,7 @@ void CMainFrame::OnFileCalculate()
 	CWnd* pWndMain = AfxGetMainWnd();
 	if (pWndMain)
 	{
-		CDFTDoc * pDoc = (CDFTDoc*)((CFrameWnd*)pWndMain)->GetActiveDocument();
+		CDFTDoc * pDoc = dynamic_cast<CDFTDoc*>(dynamic_cast<CFrameWnd*>(pWndMain)->GetActiveDocument());
 
 		if (pDoc) pDoc->StartComputing(theApp.options);
 	}
@@ -359,7 +358,7 @@ void CMainFrame::OnUpdateFileCalculate(CCmdUI *pCmdUI)
 	CWnd* pWndMain = AfxGetMainWnd();
 	if (pWndMain)
 	{
-		CDFTDoc * pDoc = (CDFTDoc*)((CFrameWnd*)pWndMain)->GetActiveDocument();
+		const CDFTDoc * pDoc = dynamic_cast<CDFTDoc*>(dynamic_cast<CFrameWnd*>(pWndMain)->GetActiveDocument());
 
 		if (pDoc)
 		{

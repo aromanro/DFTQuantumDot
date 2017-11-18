@@ -8,6 +8,7 @@ namespace DFT {
 
 
 	ReciprocalSpaceCell::ReciprocalSpaceCell(const RealSpaceCell& realSpaceCell)
+		: volume(0)
 	{
 		Init(realSpaceCell);
 	}
@@ -35,7 +36,7 @@ namespace DFT {
 				for (unsigned int val3 = 0; val3 < samples.Z; ++val3)
 				{
 					const Vector3D<int>& val = realSpaceCell.Indices(i);
-					const Vector3D<int> offset(val.X > (int)samples.X/2 ? samples.X : 0, val.Y > (int)samples.Y/2 ? samples.Y : 0, val.Z > (int)samples.Z/2 ? samples.Z : 0);
+					const Vector3D<int> offset(val.X > static_cast<int>(samples.X/2) ? samples.X : 0, val.Y > static_cast<int>(samples.Y/2) ? samples.Y : 0, val.Z > static_cast<int>(samples.Z/2) ? samples.Z : 0);
 					const Vector3D<int> index(val - offset);
 
 					Indices(i) =  index;

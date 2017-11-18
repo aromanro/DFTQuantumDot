@@ -129,7 +129,7 @@ namespace DFT {
 			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
 			const Eigen::MatrixXcd IW = cI(W);
 
-			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW);
+			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 			const Eigen::MatrixXcd ndag = n.adjoint();
 
 			const Eigen::VectorXcd Phi = SolvePoissonToReciprocalSpace(n);
@@ -152,7 +152,7 @@ namespace DFT {
 			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
 			const Eigen::MatrixXcd IW = cI(W);
 
-			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW);
+			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 
 			const Eigen::MatrixXcd Phi = SolvePoissonToReciprocalSpace(n);
 

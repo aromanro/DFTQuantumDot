@@ -53,7 +53,7 @@ namespace DFT {
 				template<typename Derived> Eigen::MatrixXcd Descend(const Eigen::MatrixBase<Derived>& W, unsigned int iter = 600)
 				{
 					const double alphat = 0.00003;
-					double alpha;
+					double alpha = 0;
 					double beta = 0;
 
 					Eigen::MatrixXcd res = W;
@@ -75,7 +75,8 @@ namespace DFT {
 
 						if (i)
 						{
-							// beta is zero for line minimization algorithms
+							// beta is zero for 'pure' line minimization algorithms
+							// non zero for conjugate gradient methods
 							beta = Direction::GetBeta(gradient, oldGrad, dir, oldDir);
 							dir += beta * oldDir;
 						}

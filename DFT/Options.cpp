@@ -58,14 +58,14 @@ void Options::Save()
 	theApp.WriteProfileBinary(L"options", L"dim2", (LPBYTE)&dim2, sizeof(double));
 	theApp.WriteProfileBinary(L"options", L"dim3", (LPBYTE)&dim3, sizeof(double));
 
-	theApp.WriteProfileInt(L"options", L"samples1", (int)samples1);
-	theApp.WriteProfileInt(L"options", L"samples2", (int)samples2);
-	theApp.WriteProfileInt(L"options", L"samples3", (int)samples3);
+	theApp.WriteProfileInt(L"options", L"samples1", static_cast<int>(samples1));
+	theApp.WriteProfileInt(L"options", L"samples2", static_cast<int>(samples2));
+	theApp.WriteProfileInt(L"options", L"samples3", static_cast<int>(samples3));
 
 	theApp.WriteProfileInt(L"options", L"Ns", Ns);
 
-	theApp.WriteProfileInt(L"options", L"SteepestDescentSteps", (int)SteepestDescentSteps);
-	theApp.WriteProfileInt(L"options", L"MinFindSteps", (int)MinFindSteps);
+	theApp.WriteProfileInt(L"options", L"SteepestDescentSteps", static_cast<int>(SteepestDescentSteps));
+	theApp.WriteProfileInt(L"options", L"MinFindSteps", static_cast<int>(MinFindSteps));
 	theApp.WriteProfileInt(L"options", L"algorithm", algorithm);
 
 	theApp.WriteProfileInt(L"options", L"harmonic", harmonic);

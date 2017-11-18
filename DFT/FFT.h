@@ -165,8 +165,8 @@ namespace Fourier {
 		// in place, aligned, inverse, different types, n1, n2, n3
 		std::map< std::tuple<bool, bool, bool, bool, unsigned int, unsigned int, unsigned int>, FFTWPlan> Plans3D;
 
-		inline bool InPlace(const void *src, void *dst) { return src == dst; }
-		inline bool Aligned(const void *src, void *dst) { return ((reinterpret_cast<size_t>(src) & 0xF) | (reinterpret_cast<size_t>(dst) & 0xF)) == 0; }
+		inline bool InPlace(const void *src, const void *dst) { return src == dst; }
+		inline bool Aligned(const void *src, const void *dst) { return ((reinterpret_cast<size_t>(src) & 0xF) | (reinterpret_cast<size_t>(dst) & 0xF)) == 0; }
 
 		inline FFTWPlan& GetPlan(bool inverse, bool differentTypes, const void *src, void* dst, unsigned int n)
 		{

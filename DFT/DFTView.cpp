@@ -125,7 +125,7 @@ CDFTView::~CDFTView()
 
 void CDFTView::OnDraw(CDC* pDC)
 {
-	CDFTDoc* pDoc = GetDocument();
+	const CDFTDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
@@ -152,19 +152,19 @@ void CDFTView::OnDraw(CDC* pDC)
 
 		// Obtain the size of the printer page in pixels.
 
-		int cxPage = pDC->GetDeviceCaps(HORZRES);
-		int cyPage = pDC->GetDeviceCaps(VERTRES);
+		const int cxPage = pDC->GetDeviceCaps(HORZRES);
+		const int cyPage = pDC->GetDeviceCaps(VERTRES);
 
 		// Get the size of the window in pixels.
 
-		int *size = renWin->GetSize();
+		const int *size = renWin->GetSize();
 		int cxWindow = size[0];
 		int cyWindow = size[1];
-		float fx = float(cxPage) / float(cxWindow);
-		float fy = float(cyPage) / float(cyWindow);
-		float scale = min(fx, fy);
-		int x = int(scale * float(cxWindow));
-		int y = int(scale * float(cyWindow));
+		const float fx = static_cast<float>(cxPage) / static_cast<float>(cxWindow);
+		const float fy = static_cast<float>(cyPage) / static_cast<float>(cyWindow);
+		const float scale = min(fx, fy);
+		const int x = static_cast<int>(scale * static_cast<float>(cxWindow));
+		const int y = static_cast<int>(scale * static_cast<float>(cyWindow));
 
 		// this is from VTK-8.0.1\GUISupport\MFC\vtkMFCWindow.cpp
 		// with some corrections, they don't do DeleteObject and DeleteDC and here for some reason delete[] pixels crashes
@@ -172,7 +172,7 @@ void CDFTView::OnDraw(CDC* pDC)
 		renWin->SetUseOffScreenBuffers(true);
 		renWin->Render();
 
-		unsigned char *pixels = renWin->GetPixelData(0, 0, cxWindow - 1, cyWindow - 1, 0);
+		const unsigned char *pixels = renWin->GetPixelData(0, 0, cxWindow - 1, cyWindow - 1, 0);
 
 		int dataWidth = ((cxWindow * 3 + 3) / 4) * 4;
 
@@ -189,18 +189,21 @@ void CDFTView::OnDraw(CDC* pDC)
 		MemoryDataHeader.bmiHeader.biXPelsPerMeter = 10000;
 		MemoryDataHeader.bmiHeader.biYPelsPerMeter = 10000;
 
-		unsigned char *MemoryData;
-		HDC MemoryHdc = (HDC)CreateCompatibleDC(pDC->GetSafeHdc());
-		HBITMAP dib = CreateDIBSection(MemoryHdc, &MemoryDataHeader, DIB_RGB_COLORS, (void **)(&(MemoryData)), NULL, 0);
+		unsigned char *MemoryData = NULL;
+		HDC MemoryHdc = static_cast<HDC>(CreateCompatibleDC(pDC->GetSafeHdc()));
+		HBITMAP dib = CreateDIBSection(MemoryHdc, &MemoryDataHeader, DIB_RGB_COLORS, (void **)(&MemoryData), NULL, 0);
 
 		// copy the pixels over
-		for (int i = 0; i < cyWindow; ++i)
-			for (int j = 0; j < cxWindow; ++j)
-			{
-				MemoryData[i*dataWidth + j * 3] = pixels[i*cxWindow * 3 + j * 3 + 2];
-				MemoryData[i*dataWidth + j * 3 + 1] = pixels[i*cxWindow * 3 + j * 3 + 1];
-				MemoryData[i*dataWidth + j * 3 + 2] = pixels[i*cxWindow * 3 + j * 3];
-			}
+		if (MemoryData)
+		{
+			for (int i = 0; i < cyWindow; ++i)
+				for (int j = 0; j < cxWindow; ++j)
+				{
+					MemoryData[i*dataWidth + j * 3] = pixels[i*cxWindow * 3 + j * 3 + 2];
+					MemoryData[i*dataWidth + j * 3 + 1] = pixels[i*cxWindow * 3 + j * 3 + 1];
+					MemoryData[i*dataWidth + j * 3 + 2] = pixels[i*cxWindow * 3 + j * 3];
+				}
+		}
 
 		SelectObject(MemoryHdc, dib);
 		StretchBlt(pDC->GetSafeHdc(), 0, 0, x, y, MemoryHdc, 0, 0, cxWindow, cyWindow, SRCCOPY);
@@ -266,7 +269,7 @@ void CDFTView::Dump(CDumpContext& dc) const
 CDFTDoc* CDFTView::GetDocument() const // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CDFTDoc)));
-	return (CDFTDoc*)m_pDocument;
+	return dynamic_cast<CDFTDoc*>(m_pDocument);
 }
 #endif //_DEBUG
 
@@ -404,7 +407,7 @@ void CDFTView::RecoverFromWarning()
 	CDFTDoc* pDoc = GetDocument();
 	if (!pDoc || saveLastViewOrbital == -1) return;
 
-	int saveLevel = pDoc->displayLevel;
+	const int saveLevel = pDoc->displayLevel;
 	pDoc->displayLevel = saveLastViewOrbital;
 	saveLastViewOrbital = saveLevel;
 
@@ -413,12 +416,12 @@ void CDFTView::RecoverFromWarning()
 
 void CDFTView::Pipeline()
 {
-	CDFTDoc* pDoc = GetDocument();
+	const CDFTDoc* pDoc = GetDocument();
 	if (!pDoc) return;
 
 	int i = pDoc->displayLevel;
 
-	if (i == lastViewOrbital || int(dataImage.size()) <= i) return;
+	if (i == lastViewOrbital || static_cast<int>(dataImage.size()) <= i) return;
 	else 
 	{
 		saveLastViewOrbital = lastViewOrbital;
