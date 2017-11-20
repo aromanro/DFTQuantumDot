@@ -162,15 +162,17 @@ namespace DFT {
 			const Eigen::VectorXcd PhiExc = Phi + cJ(exc);
 			const Eigen::MatrixXcd Veff = dualV + cJdag(O(PhiExc)) + excDeriv.cwiseProduct(cJdag(O(cJ(n))));
 
-			return -0.5 * L(W) + cIdag(Diagprod(Veff, cI(W)));
+			return -0.5 * L(W) + cIdag(Diagprod(Veff, IW));
 		}
 
 		template<typename Derived> Eigen::MatrixXcd getgrad(const Eigen::MatrixBase<Derived>& W)
 		{
-			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
+			const Eigen::MatrixXcd Wadj = W.adjoint();
+			const Eigen::MatrixXcd OW = O(W);
+			const Eigen::MatrixXcd Uinv = (Wadj * OW).inverse();
 			const Eigen::MatrixXcd HW = H(W);
   
-			return f * (HW - (O(W) * Uinv).eval() * (W.adjoint() * HW).eval()) * Uinv;
+			return f * (HW - (OW * Uinv).eval() * (Wadj * HW).eval()) * Uinv;
 		}
 
 		template<typename Derived> Eigen::MatrixXcd orthogonalize(const Eigen::MatrixBase<Derived>& W) const
@@ -221,13 +223,8 @@ namespace DFT {
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 		
-			Eigen::VectorXcd col(in.rows());
-
 			for (int i = 0; i < in.cols(); ++i)
-			{
-				fft.fwd(in.col(i).data(), col.data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
-				out.col(i) = col;
-			}
+				fft.fwd(in.col(i).data(), out.col(i).data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
 				
 			return out;
 		}
@@ -237,13 +234,8 @@ namespace DFT {
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 		
-			Eigen::VectorXcd col(in.rows());
-
 			for (int i = 0; i < in.cols(); ++i)
-			{
-				fft.inv(in.col(i).data(), col.data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
-				out.col(i) = col;
-			}
+				fft.inv(in.col(i).data(), out.col(i).data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
 				
 			return out;
 		}
