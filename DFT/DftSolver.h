@@ -27,17 +27,17 @@ namespace DFT {
 		}
 
 
-		void SetPotential(const Eigen::MatrixXcd& V)
+		inline void SetPotential(const Eigen::MatrixXcd& V)
 		{
 			dualV = cJdag(O(cJ(V)));
 		}
 
-		void SetReciprocalPotential(const Eigen::MatrixXcd& V)
+		inline void SetReciprocalPotential(const Eigen::MatrixXcd& V)
 		{
 			dualV = cJdag(V);
 		}
 
-		template<typename Derived> static double Dot(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& b)
+		template<typename Derived> inline static double Dot(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& b)
 		{
 			return (a.adjoint() * b).trace().real();
 		}
@@ -58,17 +58,17 @@ namespace DFT {
 		// might be the case that it's not a square matrix, one might have only a few basis functions
 		// compared with the number of sample points in the real space
 		// that is not the case for the current program
-		template<typename Derived> Eigen::MatrixXcd cI(const Eigen::MatrixBase<Derived>& in)
+		template<typename Derived> inline Eigen::MatrixXcd cI(const Eigen::MatrixBase<Derived>& in)
 		{
 			return FFT3D(in);
 		}
 
-		template<typename Derived> Eigen::MatrixXcd cIdag(const Eigen::MatrixBase<Derived>& in)
+		template<typename Derived> inline Eigen::MatrixXcd cIdag(const Eigen::MatrixBase<Derived>& in)
 		{
 			return InvFFT3D(in);
 		}
 
-		template<typename Derived> Eigen::MatrixXcd cJ(const Eigen::MatrixBase<Derived>& in)
+		template<typename Derived> inline Eigen::MatrixXcd cJ(const Eigen::MatrixBase<Derived>& in)
 		{
 			Eigen::MatrixXcd out = InvFFT3D(in);
 
@@ -78,7 +78,7 @@ namespace DFT {
 		}
 
 
-		template<typename Derived> Eigen::MatrixXcd cJdag(const Eigen::MatrixBase<Derived>& in)
+		template<typename Derived> inline Eigen::MatrixXcd cJdag(const Eigen::MatrixBase<Derived>& in)
 		{
 			Eigen::MatrixXcd out = FFT3D(in);
 		
@@ -91,13 +91,13 @@ namespace DFT {
 
 
 		// overlap operator - it is diagonal for plane waves basis
-		template<typename Derived> Eigen::MatrixXcd O(const Eigen::MatrixBase<Derived>& in) const
+		template<typename Derived> inline Eigen::MatrixXcd O(const Eigen::MatrixBase<Derived>& in) const
 		{
 			return realSpaceCell.Volume() * in;
 		}
 
 		// Laplacian operator in reciprocal space
-		template<typename Derived> auto L(const Eigen::MatrixBase<Derived>& in) const
+		template<typename Derived> inline Eigen::MatrixXcd L(const Eigen::MatrixBase<Derived>& in) const
 		{
 			return -realSpaceCell.Volume() * (reciprocalCell.LatticeVectorsSquaredMagnitude * Eigen::MatrixXcd::Ones(1, in.cols())).cwiseProduct(in);
 		}
@@ -112,18 +112,18 @@ namespace DFT {
 			return out;
 		}
 
-		template<typename Derived> auto diagouter(const Eigen::MatrixBase<Derived>& A, const Eigen::MatrixBase<Derived>& B) const
+		template<typename Derived> inline Eigen::MatrixXcd diagouter(const Eigen::MatrixBase<Derived>& A, const Eigen::MatrixBase<Derived>& B) const
 		{
 			return  A.cwiseProduct(B.conjugate()).rowwise().sum();			
 		}
 
-		template<typename Derived> Eigen::MatrixXcd Diagprod(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& B) const
+		template<typename Derived> inline Eigen::MatrixXcd Diagprod(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& B) const
 		{
 			return (a * Eigen::MatrixXcd::Ones(1, B.cols())).cwiseProduct(B);
 		}
 
 
-		template<typename Derived> double getE(const Eigen::MatrixBase<Derived>& W)
+		template<typename Derived> inline double getE(const Eigen::MatrixBase<Derived>& W)
 		{
 			// U is the overlap between wavefunctions - they might not be orthogonal
 			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
@@ -136,7 +136,7 @@ namespace DFT {
 
 			const Eigen::MatrixXcd exc = ExchCor::exc(n);
 			
-			const auto EKn = -0.5 * f * diagouter(L(W * Uinv), W);
+			const Eigen::MatrixXcd EKn = -0.5 * f * diagouter(L(W * Uinv), W);
 
 			const double KineticEnergy = EKn.sum().real();
 
@@ -146,7 +146,7 @@ namespace DFT {
 			return KineticEnergy + PotentialEnergy;
 		}
 
-		template<typename Derived> Eigen::MatrixXcd H(const Eigen::MatrixBase<Derived>& W)
+		template<typename Derived> inline Eigen::MatrixXcd H(const Eigen::MatrixBase<Derived>& W)
 		{
 			// U is the overlap between wavefunctions - they might not be orthogonal
 			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
@@ -165,7 +165,7 @@ namespace DFT {
 			return -0.5 * L(W) + cIdag(Diagprod(Veff, IW));
 		}
 
-		template<typename Derived> Eigen::MatrixXcd getgrad(const Eigen::MatrixBase<Derived>& W)
+		template<typename Derived> inline Eigen::MatrixXcd getgrad(const Eigen::MatrixBase<Derived>& W)
 		{
 			const Eigen::MatrixXcd Wadj = W.adjoint();
 			const Eigen::MatrixXcd OW = O(W);
@@ -175,7 +175,7 @@ namespace DFT {
 			return f * (HW - (OW * Uinv).eval() * (Wadj * HW).eval()) * Uinv;
 		}
 
-		template<typename Derived> Eigen::MatrixXcd orthogonalize(const Eigen::MatrixBase<Derived>& W) const
+		template<typename Derived> inline Eigen::MatrixXcd orthogonalize(const Eigen::MatrixBase<Derived>& W) const
 		{
 			const Eigen::MatrixXcd U = W.adjoint() * O(W);
 
@@ -183,7 +183,7 @@ namespace DFT {
 		}
 
 
-		template<typename Derived> std::pair<Eigen::MatrixXcd, Eigen::VectorXcd> getPsi(const Eigen::MatrixBase<Derived>& W)
+		template<typename Derived> inline std::pair<Eigen::MatrixXcd, Eigen::VectorXcd> getPsi(const Eigen::MatrixBase<Derived>& W)
 		{
 			const Eigen::MatrixXcd Y = orthogonalize(W);
 			const Eigen::MatrixXcd mu = Y.adjoint() * H(Y); // <Yi|H|Yj> matrix
@@ -199,7 +199,7 @@ namespace DFT {
 
 
 		// preconditioner
-		template<typename Derived> Eigen::MatrixXcd K(const Eigen::MatrixBase<Derived>& in) const
+		template<typename Derived> inline Eigen::MatrixXcd K(const Eigen::MatrixBase<Derived>& in) const
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 
@@ -219,7 +219,7 @@ namespace DFT {
 	
 	protected:
 
-		template<typename Derived> Eigen::MatrixXcd FFT3D(const Eigen::MatrixBase<Derived>& in)
+		template<typename Derived> inline Eigen::MatrixXcd FFT3D(const Eigen::MatrixBase<Derived>& in)
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 		
@@ -230,7 +230,7 @@ namespace DFT {
 		}
 
 
-		template<typename Derived> Eigen::MatrixXcd InvFFT3D(const Eigen::MatrixBase<Derived>& in)
+		template<typename Derived> inline Eigen::MatrixXcd InvFFT3D(const Eigen::MatrixBase<Derived>& in)
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 		
