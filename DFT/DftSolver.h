@@ -170,7 +170,7 @@ namespace DFT {
 			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
 			const Eigen::MatrixXcd HW = H(W);
   
-			return f * ((HW - (O(W) * Uinv) * (W.adjoint() * HW)) * Uinv);
+			return f * (HW - (O(W) * Uinv).eval() * (W.adjoint() * HW).eval()) * Uinv;
 		}
 
 		template<typename Derived> Eigen::MatrixXcd orthogonalize(const Eigen::MatrixBase<Derived>& W) const
