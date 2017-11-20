@@ -42,12 +42,12 @@ namespace DFT {
 			return (a.adjoint() * b).trace().real();
 		}
 
-		inline Eigen::MatrixXcd SolvePoissonToReciprocalSpace(const Eigen::MatrixXcd& chargeDensity)
+		template<typename Derived> inline Eigen::MatrixXcd SolvePoissonToReciprocalSpace(const Eigen::MatrixBase<Derived>& chargeDensity)
 		{
 			return -4. * M_PI * Linv(O(cJ(chargeDensity)));
 		}
 
-		inline Eigen::MatrixXcd SolvePoissonToRealSpace(const Eigen::MatrixXcd& chargeDensity)
+		template<typename Derived> inline Eigen::MatrixXcd SolvePoissonToRealSpace(const Eigen::MatrixBase<Derived>& chargeDensity)
 		{
 			return cI(SolvePoissonToReciprocalSpace(chargeDensity));
 		}
@@ -97,7 +97,7 @@ namespace DFT {
 		}
 
 		// Laplacian operator in reciprocal space
-		template<typename Derived> Eigen::MatrixXcd L(const Eigen::MatrixBase<Derived>& in) const
+		template<typename Derived> auto L(const Eigen::MatrixBase<Derived>& in) const
 		{
 			return -realSpaceCell.Volume() * (reciprocalCell.LatticeVectorsSquaredMagnitude * Eigen::MatrixXcd::Ones(1, in.cols())).cwiseProduct(in);
 		}
@@ -112,7 +112,7 @@ namespace DFT {
 			return out;
 		}
 
-		template<typename Derived> Eigen::MatrixXcd diagouter(const Eigen::MatrixBase<Derived>& A, const Eigen::MatrixBase<Derived>& B) const
+		template<typename Derived> auto diagouter(const Eigen::MatrixBase<Derived>& A, const Eigen::MatrixBase<Derived>& B) const
 		{
 			return  A.cwiseProduct(B.conjugate()).rowwise().sum();			
 		}
@@ -136,7 +136,7 @@ namespace DFT {
 
 			const Eigen::MatrixXcd exc = ExchCor::exc(n);
 			
-			const Eigen::MatrixXcd EKn = -0.5 * f * diagouter(L(W * Uinv), W);
+			const auto EKn = -0.5 * f * diagouter(L(W * Uinv), W);
 
 			const double KineticEnergy = EKn.sum().real();
 
