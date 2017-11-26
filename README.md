@@ -1,7 +1,8 @@
 # DFTQuantumDot
 Density Functional Theory applied on a 'quantum dot'. Volumetric visualization of orbitals with VTK
 
-A detailed description of the project will be soon on the computational physics blog: https://compphys.go.ro/
+A description of the project is on the computational physics blog: https://compphys.go.ro/dft-for-a-quantum-dot/
+Some theory is also available there: https://compphys.go.ro/density-functional-theory/
 
 ### PROGRAM IN ACTION
 
