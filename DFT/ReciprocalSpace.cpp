@@ -21,8 +21,9 @@ namespace DFT {
 	void ReciprocalSpaceCell::Init(const RealSpaceCell& realSpaceCell)
 	{
 		const Vector3D<double>& dim = realSpaceCell.GetSize();
-		m_dim = Vector3D<double>(2 * M_PI / dim.X, 2 * M_PI / dim.Y, 2 * M_PI / dim.Z);
-		volume = 1. / realSpaceCell.Volume();
+		const double twopi = 2. * M_PI;
+		m_dim = Vector3D<double>(twopi / dim.X, twopi / dim.Y, twopi / dim.Z);
+		volume = twopi * twopi * twopi / realSpaceCell.Volume();
 
 		Indices.resize(realSpaceCell.Samples(), 1); 
 		LatticeVectors.resize(realSpaceCell.Samples(), 1);
