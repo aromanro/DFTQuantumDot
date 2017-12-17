@@ -20,7 +20,8 @@ namespace DFT {
 
 	void ReciprocalSpaceCell::Init(const RealSpaceCell& realSpaceCell)
 	{
-		m_dim = Vector3D<double>(2 * M_PI / GetSize().X, 2 * M_PI / GetSize().Y, 2 * M_PI / GetSize().Z);
+		const Vector3D<double>& dim = realSpaceCell.GetSize();
+		m_dim = Vector3D<double>(2 * M_PI / dim.X, 2 * M_PI / dim.Y, 2 * M_PI / dim.Z);
 		volume = 1. / realSpaceCell.Volume();
 
 		Indices.resize(realSpaceCell.Samples(), 1); 
@@ -29,7 +30,6 @@ namespace DFT {
 
 		unsigned int i = 0;
 		const Vector3D<unsigned int>& samples = realSpaceCell.GetSamples();
-		const Vector3D<double>& dim = realSpaceCell.GetSize();
 
 		for (unsigned int val1 = 0; val1 < samples.X; ++val1)
 			for (unsigned int val2 = 0; val2 < samples.Y; ++val2)
