@@ -39,14 +39,13 @@ namespace DFT {
 					const Vector3D<int>& val = realSpaceCell.Indices(i);
 					const Vector3D<int> offset(val.X > static_cast<int>(samples.X/2) ? samples.X : 0, val.Y > static_cast<int>(samples.Y/2) ? samples.Y : 0, val.Z > static_cast<int>(samples.Z/2) ? samples.Z : 0);
 					const Vector3D<int> index(val - offset);
+					const Vector3D<double> latticeVector(index.X / dim.X, index.Y / dim.Y, index.Z / dim.Z);
 
 					Indices(i) =  index;
-					
-					Vector3D<double> latticeVector(index.X / dim.X, index.Y / dim.Y, index.Z / dim.Z);
-					
+										
 					LatticeVectors(i) = 2. * M_PI * latticeVector;
-
 					LatticeVectorsSquaredMagnitude(i) = LatticeVectors(i) * LatticeVectors(i);
+					
 					++i;
 				}
 	}

@@ -70,7 +70,7 @@ namespace DFT {
 
 		template<typename Derived> inline Eigen::MatrixXcd cJ(const Eigen::MatrixBase<Derived>& in)
 		{
-			Eigen::MatrixXcd out = InvFFT3D(in);
+			const Eigen::MatrixXcd out = InvFFT3D(in);
 
 			const double norm = 1. / realSpaceCell.Samples();
 
@@ -80,7 +80,7 @@ namespace DFT {
 
 		template<typename Derived> inline Eigen::MatrixXcd cJdag(const Eigen::MatrixBase<Derived>& in)
 		{
-			Eigen::MatrixXcd out = FFT3D(in);
+			const Eigen::MatrixXcd out = FFT3D(in);
 		
 			const double norm = 1. / realSpaceCell.Samples();
 				
@@ -114,7 +114,7 @@ namespace DFT {
 
 		template<typename Derived> inline Eigen::MatrixXcd diagouter(const Eigen::MatrixBase<Derived>& A, const Eigen::MatrixBase<Derived>& B) const
 		{
-			return  A.cwiseProduct(B.conjugate()).rowwise().sum();			
+			return A.cwiseProduct(B.conjugate()).rowwise().sum();			
 		}
 
 		template<typename Derived> inline Eigen::MatrixXcd Diagprod(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& B) const
@@ -130,18 +130,12 @@ namespace DFT {
 			const Eigen::MatrixXcd IW = cI(W);
 
 			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
-			const Eigen::MatrixXcd ndag = n.adjoint();
-
-			const Eigen::VectorXcd Phi = SolvePoissonToReciprocalSpace(n);
 
 			const Eigen::MatrixXcd exc = ExchCor::exc(n);
+			const Eigen::VectorXcd PhiExc = 0.5 * SolvePoissonToReciprocalSpace(n) + cJ(exc);
 			
-			const Eigen::MatrixXcd EKn = -0.5 * f * diagouter(L(W * Uinv), W);
-
-			const double KineticEnergy = EKn.sum().real();
-
-			const Eigen::VectorXcd PhiExc = 0.5 * Phi + cJ(exc);
-			const double PotentialEnergy = (dualV.adjoint() * n + ndag * cJdag(O(PhiExc)))(0).real();
+			const double KineticEnergy = -0.5 * f * diagouter(L(W * Uinv), W).sum().real();
+			const double PotentialEnergy = (dualV.adjoint() * n + n.adjoint() * cJdag(O(PhiExc)))(0).real();
 																							   
 			return KineticEnergy + PotentialEnergy;
 		}
@@ -154,12 +148,10 @@ namespace DFT {
 
 			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 
-			const Eigen::MatrixXcd Phi = SolvePoissonToReciprocalSpace(n);
-
 			const Eigen::MatrixXcd exc = ExchCor::exc(n);
 			const Eigen::MatrixXcd excDeriv = ExchCor::excDeriv(n);
 
-			const Eigen::VectorXcd PhiExc = Phi + cJ(exc);
+			const Eigen::VectorXcd PhiExc = SolvePoissonToReciprocalSpace(n) + cJ(exc);
 			const Eigen::MatrixXcd Veff = dualV + cJdag(O(PhiExc)) + excDeriv.cwiseProduct(cJdag(O(cJ(n))));
 
 			return -0.5 * L(W) + cIdag(Diagprod(Veff, IW));
@@ -203,7 +195,7 @@ namespace DFT {
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 
-			for (int i = 0; i < in.cols(); ++i)
+			for (unsigned int i = 0; i < in.cols(); ++i)
 				out.col(i) = in.col(i).cwiseQuotient(Eigen::MatrixXcd::Ones(in.rows(), 1) + reciprocalCell.LatticeVectorsSquaredMagnitude);
 
 			 return out;
@@ -223,7 +215,7 @@ namespace DFT {
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 		
-			for (int i = 0; i < in.cols(); ++i)
+			for (unsigned int i = 0; i < in.cols(); ++i)
 				fft.fwd(in.col(i).data(), out.col(i).data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
 				
 			return out;
@@ -234,7 +226,7 @@ namespace DFT {
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 		
-			for (int i = 0; i < in.cols(); ++i)
+			for (unsigned int i = 0; i < in.cols(); ++i)
 				fft.inv(in.col(i).data(), out.col(i).data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
 				
 			return out;
