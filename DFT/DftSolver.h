@@ -131,11 +131,8 @@ namespace DFT {
 
 			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 
-			const Eigen::MatrixXcd exc = ExchCor::exc(n);
-			const Eigen::VectorXcd PhiExc = 0.5 * SolvePoissonToReciprocalSpace(n) + cJ(exc);
-			
 			const double KineticEnergy = -0.5 * f * diagouter(L(W * Uinv), W).sum().real();
-			const double PotentialEnergy = (dualV.adjoint() * n + n.adjoint() * cJdag(O(PhiExc)))(0).real();
+			const double PotentialEnergy = (dualV.adjoint() * n + n.adjoint() * cJdag(O(0.5 * SolvePoissonToReciprocalSpace(n) + cJ(ExchCor::exc(n)))))(0).real();
 																							   
 			return KineticEnergy + PotentialEnergy;
 		}
@@ -148,11 +145,7 @@ namespace DFT {
 
 			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 
-			const Eigen::MatrixXcd exc = ExchCor::exc(n);
-			const Eigen::MatrixXcd excDeriv = ExchCor::excDeriv(n);
-
-			const Eigen::VectorXcd PhiExc = SolvePoissonToReciprocalSpace(n) + cJ(exc);
-			const Eigen::MatrixXcd Veff = dualV + cJdag(O(PhiExc)) + excDeriv.cwiseProduct(cJdag(O(cJ(n))));
+			const Eigen::MatrixXcd Veff = dualV + cJdag(O(SolvePoissonToReciprocalSpace(n) + cJ(ExchCor::exc(n)))) + ExchCor::excDeriv(n).cwiseProduct(cJdag(O(cJ(n))));
 
 			return -0.5 * L(W) + cIdag(Diagprod(Veff, IW));
 		}
