@@ -325,8 +325,7 @@ void CDFTDoc::StartComputing(const Options& options)
 
 
 
-		Eigen::MatrixXcd W = Eigen::MatrixXcd::Random(dftSolver.realSpaceCell.Samples(), options.Ns).normalized();
-
+		Eigen::MatrixXcd W = Eigen::MatrixXcd::Random(dftSolver.realSpaceCell.Samples(), options.Ns);
 		W = dftSolver.orthogonalize(W);
 
 		// *************************** fdtest ************************************************
