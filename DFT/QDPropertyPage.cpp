@@ -65,15 +65,15 @@ void QDPropertyPage::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(QDPropertyPage, CMFCPropertyPage)
-	ON_EN_CHANGE(IDC_EDIT1, &QDPropertyPage::OnEnChangeEdit1)
-	ON_EN_CHANGE(IDC_EDIT2, &QDPropertyPage::OnEnChangeEdit2)
-	ON_EN_CHANGE(IDC_EDIT3, &QDPropertyPage::OnEnChangeEdit3)
-	ON_EN_CHANGE(IDC_EDIT4, &QDPropertyPage::OnEnChangeEdit4)
-	ON_EN_CHANGE(IDC_EDIT5, &QDPropertyPage::OnEnChangeEdit5)
-	ON_EN_CHANGE(IDC_EDIT6, &QDPropertyPage::OnEnChangeEdit6)
-	ON_BN_CLICKED(IDC_RADIO1, &QDPropertyPage::OnBnClickedRadio1)
-	ON_BN_CLICKED(IDC_RADIO2, &QDPropertyPage::OnBnClickedRadio2)
-	ON_EN_CHANGE(IDC_EDIT7, &QDPropertyPage::OnEnChangeEdit7)
+	ON_EN_CHANGE(IDC_EDIT1, &QDPropertyPage::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT2, &QDPropertyPage::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT3, &QDPropertyPage::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT4, &QDPropertyPage::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT5, &QDPropertyPage::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT6, &QDPropertyPage::OnEnChangeEdit)
+	ON_EN_CHANGE(IDC_EDIT7, &QDPropertyPage::OnEnChangeEdit)
+	ON_BN_CLICKED(IDC_RADIO1, &QDPropertyPage::OnBnClickedRadio)
+	ON_BN_CLICKED(IDC_RADIO2, &QDPropertyPage::OnBnClickedRadio)
 END_MESSAGE_MAP()
 
 
@@ -120,55 +120,12 @@ void QDPropertyPage::ApplyValues()
 }
 
 
-void QDPropertyPage::OnEnChangeEdit1()
+void QDPropertyPage::OnEnChangeEdit()
 {
 	SetModified();
 }
 
-
-void QDPropertyPage::OnEnChangeEdit2()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnEnChangeEdit3()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnEnChangeEdit4()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnEnChangeEdit5()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnEnChangeEdit6()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnBnClickedRadio1()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnBnClickedRadio2()
-{
-	SetModified();
-}
-
-
-void QDPropertyPage::OnEnChangeEdit7()
+void QDPropertyPage::OnBnClickedRadio()
 {
 	SetModified();
 }

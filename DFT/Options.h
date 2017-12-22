@@ -26,6 +26,8 @@ public:
 
 	int harmonic; // 1 - harmonic potential, 0 - linear
 
+	int numThreadsFFT;
+
 protected:
 	static double GetDouble(LPCTSTR param, double defval);
 };

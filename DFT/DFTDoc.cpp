@@ -316,6 +316,7 @@ void CDFTDoc::StartComputing(const Options& options)
 
 		DFT::DftSolver<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3);
 		DFT::QuantumDot<decltype(dftSolver)> quantumDot(dftSolver, 1 == options.harmonic);
+		dftSolver.fft.SetNumThreads(options.numThreadsFFT);
 
 		QDResults computingResults;
 		computingResults.options = options;
@@ -324,7 +325,7 @@ void CDFTDoc::StartComputing(const Options& options)
 
 
 
-		Eigen::MatrixXcd W = Eigen::MatrixXcd::Random(dftSolver.realSpaceCell.Samples(), options.Ns);
+		Eigen::MatrixXcd W = Eigen::MatrixXcd::Random(dftSolver.realSpaceCell.Samples(), options.Ns).normalized();
 
 		W = dftSolver.orthogonalize(W);
 

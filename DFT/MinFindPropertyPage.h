@@ -22,6 +22,7 @@ protected:
 	unsigned int MinFindSteps;
 	
 	int algorithm; // 0 - line minimization, 1 - preconditioned line minimization, 2 - Polak Ribiere conjugate gradient, 3 - Hestenes Stiefel conj grad, 4 - Fletcher Reeves conj grad
+	unsigned int numThreadsFFT;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -30,11 +31,6 @@ public:
 	virtual BOOL OnApply();
 
 	void ApplyValues();
-	afx_msg void OnEnChangeEdit1();
-	afx_msg void OnEnChangeEdit2();
-	afx_msg void OnBnClickedRadio1();
-	afx_msg void OnBnClickedRadio2();
-	afx_msg void OnBnClickedRadio3();
-	afx_msg void OnBnClickedRadio4();
-	afx_msg void OnBnClickedRadio5();
+	afx_msg void OnEnChangeEdit();
+	afx_msg void OnBnClickedRadio();
 };

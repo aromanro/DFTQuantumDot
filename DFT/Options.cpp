@@ -8,7 +8,7 @@ Options::Options()
 	samples1(32), samples2(32), samples3(32),
 	Ns(10),
 	SteepestDescentSteps(40), MinFindSteps(100), algorithm(4),
-	harmonic(1)
+	harmonic(1), numThreadsFFT(4)
 {
 }
 
@@ -50,6 +50,8 @@ void Options::Load()
 	algorithm = theApp.GetProfileInt(L"options", L"algorithm", 4);
 
 	harmonic = theApp.GetProfileInt(L"options", L"harmonic", 1);
+
+	numThreadsFFT = theApp.GetProfileInt(L"options", L"numThreadsFFT", 4);
 }
 
 void Options::Save()
@@ -69,4 +71,6 @@ void Options::Save()
 	theApp.WriteProfileInt(L"options", L"algorithm", algorithm);
 
 	theApp.WriteProfileInt(L"options", L"harmonic", harmonic);
+
+	theApp.WriteProfileInt(L"options", L"numThreadsFFT", numThreadsFFT);
 }

@@ -42,13 +42,6 @@ public:
 	virtual BOOL OnApply();
 	virtual BOOL OnInitDialog();
 	void ApplyValues();
-	afx_msg void OnEnChangeEdit1();
-	afx_msg void OnEnChangeEdit2();
-	afx_msg void OnEnChangeEdit3();
-	afx_msg void OnEnChangeEdit4();
-	afx_msg void OnEnChangeEdit5();
-	afx_msg void OnEnChangeEdit6();
-	afx_msg void OnBnClickedRadio1();
-	afx_msg void OnBnClickedRadio2();
-	afx_msg void OnEnChangeEdit7();
+	afx_msg void OnEnChangeEdit();
+	afx_msg void OnBnClickedRadio();
 };
