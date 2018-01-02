@@ -4,6 +4,7 @@
 #include <complex>
 #include <map>
 #include <tuple>
+#include <mutex>
 
 
 namespace Fourier {
@@ -11,30 +12,56 @@ namespace Fourier {
 	class FFTWPlan {
 	public:
 		FFTWPlan() : plan(0) {}
-		~FFTWPlan() { if (plan) fftw_destroy_plan(plan); }
+		~FFTWPlan() 
+		{ 
+		  if (plan) 
+		  { 
+			std::lock_guard<std::mutex> lock(planMutex);
+			fftw_destroy_plan(plan); 
+		  } 
+		}
+
+		static std::mutex planMutex;
+
 
 		// 1D
 
 		inline void fwd(fftw_complex* src, fftw_complex* dst, unsigned int n)
 		{
-			if (!plan) plan = fftw_plan_dft_1d(n, src, dst, FFTW_FORWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_1d(n, src, dst, FFTW_FORWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft(plan, src, dst);
 		}
 
 		inline void inv(fftw_complex* src, fftw_complex* dst, unsigned int n) {
-			if (!plan) plan = fftw_plan_dft_1d(n, src, dst, FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_1d(n, src, dst, FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft(plan, src, dst);
 		}
 
 		inline void fwd(double* src, fftw_complex* dst, unsigned int n)
 		{
-			if (!plan) plan = fftw_plan_dft_r2c_1d(n, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_r2c_1d(n, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft_r2c(plan, src, dst);
 		}
 
 		inline void inv(fftw_complex* src, double* dst, unsigned int n)
 		{
-			if (!plan) plan = fftw_plan_dft_c2r_1d(n, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_c2r_1d(n, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft_c2r(plan, src, dst);
 		}
 
@@ -42,25 +69,41 @@ namespace Fourier {
 
 		inline void fwd(fftw_complex* src, fftw_complex* dst, unsigned int n0, unsigned int n1)
 		{
-			if (!plan) plan = fftw_plan_dft_2d(n0, n1, src, dst, FFTW_FORWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_2d(n0, n1, src, dst, FFTW_FORWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft(plan, src, dst);
 		}
 
 		inline void inv(fftw_complex* src, fftw_complex* dst, unsigned int n0, unsigned int n1)
 		{
-			if (!plan) plan = fftw_plan_dft_2d(n0, n1, src, dst, FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_2d(n0, n1, src, dst, FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft(plan, src, dst);
 		}
 
 		inline void fwd(double* src, fftw_complex* dst, unsigned int n0, unsigned int n1)
 		{
-			if (!plan) plan = fftw_plan_dft_r2c_2d(n0, n1, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_r2c_2d(n0, n1, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft_r2c(plan, src, dst);
 		}
 
 		inline void inv(fftw_complex* src, double* dst, unsigned int n0, unsigned int n1)
 		{
-			if (!plan) plan = fftw_plan_dft_c2r_2d(n0, n1, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_c2r_2d(n0, n1, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft_c2r(plan, src, dst);
 		}
 
@@ -68,25 +111,41 @@ namespace Fourier {
 
 		inline void fwd(fftw_complex* src, fftw_complex* dst, unsigned int n0, unsigned int n1, unsigned int n2)
 		{
-			if (!plan) plan = fftw_plan_dft_3d(n0, n1, n2, src, dst, FFTW_FORWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_3d(n0, n1, n2, src, dst, FFTW_FORWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft(plan, src, dst);
 		}
 
 		inline void inv(fftw_complex* src, fftw_complex* dst, unsigned int n0, unsigned int n1, unsigned int n2)
 		{
-			if (!plan) plan = fftw_plan_dft_3d(n0, n1, n2, src, dst, FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan) 
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_3d(n0, n1, n2, src, dst, FFTW_BACKWARD, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft(plan, src, dst);
 		}
 
 		inline void fwd(double* src, fftw_complex* dst, unsigned int n0, unsigned int n1, unsigned int n2)
 		{
-			if (!plan) plan = fftw_plan_dft_r2c_3d(n0, n1, n2, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan) 
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_r2c_3d(n0, n1, n2, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft_r2c(plan, src, dst);
 		}
 
 		inline void inv(fftw_complex* src, double* dst, unsigned int n0, unsigned int n1, unsigned int n2)
 		{
-			if (!plan) plan = fftw_plan_dft_c2r_3d(n0, n1, n2, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			if (!plan)
+			{
+				std::lock_guard<std::mutex> lock(planMutex);
+				plan = fftw_plan_dft_c2r_3d(n0, n1, n2, src, dst, FFTW_ESTIMATE | FFTW_PRESERVE_INPUT);
+			}
 			fftw_execute_dft_c2r(plan, src, dst);
 		}
 	protected:
@@ -96,7 +155,7 @@ namespace Fourier {
 	class FFT
 	{
 	public:
-		FFT(int numThreads = 1);
+		FFT(int numThreads = 0); // zero means let it alone for FFTW to decide
 		~FFT();
 
 		// 1D
@@ -151,7 +210,7 @@ namespace Fourier {
 			Plans1D.clear();
 			Plans2D.clear();
 			Plans3D.clear();
-			fftw_cleanup_threads();
+			//fftw_cleanup_threads();
 		}
 
 

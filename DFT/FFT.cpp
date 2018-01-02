@@ -2,11 +2,13 @@
 #include "FFT.h"
 
 namespace Fourier {
+	static int init = fftw_init_threads();
+	
+	std::mutex FFTWPlan::planMutex;
 
 	FFT::FFT(int numThreads)
-	{
-		fftw_init_threads();
-		SetNumThreads(numThreads);
+	{		
+		if (numThreads != 0) SetNumThreads(numThreads);
 	}
 
 
@@ -18,6 +20,9 @@ namespace Fourier {
 	void FFT::SetNumThreads(int numThreads)
 	{
 		Clear();
+
+		std::lock_guard<std::mutex> lock(FFTWPlan::planMutex);
+
 		fftw_plan_with_nthreads(numThreads);
 	}
 
