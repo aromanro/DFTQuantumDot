@@ -462,8 +462,6 @@ void CDFTView::Pipeline()
 
 	ren->AddActor(outlineActor);
 
-	ren->RemoveActor(textActor);
-
 	textActor = vtkSmartPointer<vtkTextActor>::New();
 	CString str;
 	str.Format(L"E: %.2f Hartree", results.energies[i]);
