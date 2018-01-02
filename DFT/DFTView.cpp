@@ -429,6 +429,8 @@ void CDFTView::Pipeline()
 	}
 	
 
+	ren->RemoveAllViewProps();
+
 	vtkVolumeProperty* volumeProperty = volume->GetProperty();
 
 	vtkPiecewiseFunction* opacityTransferFunction = volumeProperty->GetScalarOpacity();
@@ -439,6 +441,8 @@ void CDFTView::Pipeline()
 
 
 	volumeMapper->SetInputData(dataImage[i]);	
+
+	ren->AddViewProp(volume);
 
 	vtkSmartPointer<vtkCubeSource> cube = vtkSmartPointer<vtkCubeSource>::New();
 	cube->SetBounds(0, results.realSpaceCell.GetSize().X, 0, results.realSpaceCell.GetSize().Y, 0, results.realSpaceCell.GetSize().Z);
