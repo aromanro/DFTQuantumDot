@@ -49,7 +49,7 @@ namespace DFT {
 
 		template<typename Derived> inline Eigen::MatrixXcd SolvePoissonToRealSpace(const Eigen::MatrixBase<Derived>& chargeDensity)
 		{
-			return cI(SolvePoissonToReciprocalSpace(chargeDensity));
+			return cI(SolvePoissonToReciprocalSpace(chargeDensity)).real();
 		}
 
 		//*********************************************************************************************
