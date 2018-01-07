@@ -34,7 +34,7 @@ namespace DFT {
 
 		inline void SetReciprocalPotential(const Eigen::MatrixXcd& V)
 		{
-			dualV = cJdag(V);
+			dualV = cJdag(V).real();
 		}
 
 		template<typename Derived> inline static double Dot(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& b)
