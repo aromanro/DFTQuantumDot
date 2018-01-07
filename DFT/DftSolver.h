@@ -89,7 +89,7 @@ namespace DFT {
 
 		template<typename Derived> inline Eigen::MatrixXcd cJdagOcJ(const Eigen::MatrixBase<Derived>& in)
 		{
-			return realSpaceCell.Volume() / realSpaceCell.Samples() * in;
+			return realSpaceCell.SampleVolume() * in;
 		}
 
 		//*********************************************************************************************
