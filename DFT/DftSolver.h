@@ -128,6 +128,20 @@ namespace DFT {
 		}
 
 
+		inline Eigen::MatrixXcd getn(const Eigen::MatrixXcd& Psi)
+		{
+			Eigen::MatrixXcd IPsi = cI(Psi.col(0));
+			Eigen::MatrixXcd n = IPsi.cwiseProduct(IPsi.conjugate());
+
+			for (unsigned int col = 1; col < Psi.cols(); ++col)
+			{
+				IPsi = cI(Psi.col(col));
+				n += IPsi.cwiseProduct(IPsi.conjugate());
+			}
+
+			return f * n;
+		}
+
 		template<typename Derived> inline double getE(const Eigen::MatrixBase<Derived>& W)
 		{
 			// U is the overlap between wavefunctions - they might not be orthogonal
