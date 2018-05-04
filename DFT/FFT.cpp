@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "FFT.h"
 
 namespace Fourier {

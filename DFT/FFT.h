@@ -6,6 +6,9 @@
 #include <tuple>
 #include <mutex>
 
+// inspired from unsupported FFT from Eigen
+// unfortunately the implementation there does not support 2D and 3D transforms and also multi threading
+// I didn't like the way they index plans, either, so here it is, reimplemented
 
 namespace Fourier {
 
