@@ -44,6 +44,8 @@
 #define IDC_RADIO3                      1009
 #define IDC_RADIO4                      1010
 #define IDC_RADIO5                      1011
+#define IDC_MFCLINK1                    1012
+#define IDC_MFCLINK2                    1013
 #define ID_LEVEL_1                      32771
 #define ID_LEVEL_2                      32772
 #define ID_LEVEL_3                      32773
@@ -90,9 +92,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
+#define _APS_NEXT_RESOURCE_VALUE        313
 #define _APS_NEXT_COMMAND_VALUE         32816
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
