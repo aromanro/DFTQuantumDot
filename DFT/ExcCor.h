@@ -7,13 +7,14 @@ namespace DFT {
 
 	class  ChachiyoExchCor
 	{
+	protected:
+		static constexpr double a = (M_LN2 - 1.) / (2. * M_PI * M_PI);
+		static constexpr double b = 20.4562557;
 	public:
 		static Eigen::MatrixXcd exc(const Eigen::MatrixXcd& n)
 		{
 			assert(n.cols() == 1);
 
-			static const double a = (log(2.) - 1.) / (2. * M_PI * M_PI);
-			static const double b = 20.4562557;
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
@@ -40,9 +41,6 @@ namespace DFT {
 		static Eigen::MatrixXcd excDeriv(const Eigen::MatrixXcd& n)
 		{
 			assert(n.cols() == 1);
-
-			static const double a = (log(2.) - 1.) / (2. * M_PI * M_PI);
-			static const double b = 20.4562557;
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
