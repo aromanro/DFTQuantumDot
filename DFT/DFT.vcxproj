@@ -223,6 +223,7 @@
     <ClInclude Include="FFT.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MinFindPropertyPage.h" />
+    <ClInclude Include="Molecule.h" />
     <ClInclude Include="NumberEdit.h" />
     <ClInclude Include="Options.h" />
     <ClInclude Include="OptionsPropertySheet.h" />

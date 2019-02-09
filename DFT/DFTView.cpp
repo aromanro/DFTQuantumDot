@@ -16,7 +16,7 @@
 #include "DFTDoc.h"
 #include "DFTView.h"
 
-
+#include "Molecule.h"
 
 
 
@@ -371,7 +371,6 @@ void CDFTView::OnInitialUpdate()
 	GetClientRect(&rect);
 	iren->Initialize();
 	renWin->SetSize(rect.right - rect.left, rect.bottom - rect.top);
-
 
 	timer = SetTimer(1, 300, NULL);
 }

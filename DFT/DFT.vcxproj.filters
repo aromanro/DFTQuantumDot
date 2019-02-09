@@ -81,6 +81,9 @@
     <ClInclude Include="OptionsPropertySheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Molecule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFT.cpp">
