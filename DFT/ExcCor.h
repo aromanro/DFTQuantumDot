@@ -41,8 +41,8 @@ namespace DFT {
 		{
 			assert(n.cols() == 1);
 
-			const double a = (log(2.) - 1.) / (2. * M_PI * M_PI);
-			const double b = 20.4562557;
+			static const double a = (log(2.) - 1.) / (2. * M_PI * M_PI);
+			static const double b = 20.4562557;
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
