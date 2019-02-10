@@ -237,6 +237,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="VWNExcCor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFT.cpp" />

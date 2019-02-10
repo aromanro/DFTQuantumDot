@@ -84,6 +84,9 @@
     <ClInclude Include="Molecule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VWNExcCor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFT.cpp">

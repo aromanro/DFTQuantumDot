@@ -1,6 +1,9 @@
 #pragma once
 
+
 #include "DftSolver.h"
+#include "VWNExcCor.h"
+
 #include "Vector3D.h"
 
 // this is added later to the project, just as an example on how to use the dft solver to compute a molecule
@@ -127,11 +130,12 @@ namespace DFT {
 
 
 	// How to use (the H2 example from assignment):
-	// you will get different results than those from the assignment, the reason is the different exchange correlation - if Vosko-Wilk-Nusair is used, the results are basically the same
+	// with ChachiyoExchCor you will get different results than those from the assignment, the reason is the different exchange correlation 
+	// if Vosko-Wilk-Nusair is used, the results are basically the same
 
 	/*
 	
-	DFT::DftSolver<DFT::ChachiyoExchCor> dftSolver(16, 16, 16, 64, 64, 64);
+	DFT::DftSolver<DFT::VWNExchCor> dftSolver(16, 16, 16, 64, 64, 64);
 	DFT::Molecule<decltype(dftSolver)> molecule(dftSolver, { {0,0,0}, {1.5, 0, 0} }, { 1, 1 }, 2);
 
 	double ewald = molecule.EwaldEnergy();

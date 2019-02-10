@@ -16,10 +16,6 @@
 #include "DFTDoc.h"
 #include "DFTView.h"
 
-#include "Molecule.h"
-
-
-
 #include <vtkAutoInit.h>
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
