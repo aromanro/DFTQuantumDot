@@ -18,7 +18,7 @@ namespace DFT {
 		{
 			assert(n.cols() == 1);
 			static const double
-				X1 = 0.75*pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
+				X1 = 0.610887057710857, // 0.75*pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
 				A = 0.0310907,
 				x0 = -0.10498,
 				b = 3.72744,
@@ -37,8 +37,9 @@ namespace DFT {
 
 				const double x = sqrt(rs);
 				const double X = x * x + b * x + c;
+				const double atanQ = atan(Q / (2.*x + b));
 
-				res(i, 0) = -X1 / rs + A * (log(x*x / X) + 2.*b / Q * atan(Q / (2.*x + b)) - (b*x0) / X0 * (log((x - x0)*(x - x0) / X) + 2.*(2.*x0 + b) / Q * atan(Q / (2.*x + b))));
+				res(i, 0) = -X1 / rs + A * (log(x*x / X) + 2.*b / Q * atanQ - (b*x0) / X0 * (log((x - x0)*(x - x0) / X) + 2.*(2.*x0 + b) / Q * atanQ));
 			}
 
 			return res;
@@ -48,7 +49,7 @@ namespace DFT {
 		{
 			assert(n.cols() == 1);
 			static const double
-				X1 = 0.75*pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
+				X1 = 0.610887057710857, // 0.75*pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
 				A = 0.0310907,
 				x0 = -0.10498,
 				b = 3.72744,
