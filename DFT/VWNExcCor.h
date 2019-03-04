@@ -38,8 +38,9 @@ namespace DFT {
 				const double x = sqrt(rs);
 				const double X = x * x + b * x + c;
 				const double atanQ = atan(Q / (2.*x + b));
+				const double difx = x - x0;
 
-				res(i, 0) = -X1 / rs + A * (log(x*x / X) + 2.*b / Q * atanQ - (b*x0) / X0 * (log((x - x0)*(x - x0) / X) + 2.*(2.*x0 + b) / Q * atanQ));
+				res(i, 0) = -X1 / rs + A * (log(x*x / X) + 2.*b / Q * atanQ - (b*x0) / X0 * (log(difx * difx / X) + 2.*(2.*x0 + b) / Q * atanQ));
 			}
 
 			return res;
@@ -66,8 +67,10 @@ namespace DFT {
 				const double x = sqrt(rs);
 				const double X = x * x + b * x + c;
 				const double dx = 0.5 / x;
+				const double twoxb = 2 * x + b;
+
 				res(i, 0) = dx *
-					(2.*X1 / (rs*x) + A * (2. / x - (2.*x + b) / X - 4.*b / (Q*Q + (2.*x + b)*(2.*x + b)) - (b*x0) / X0 * (2. / (x - x0) - (2.*x + b) / X - 4.*(2.*x0 + b) / (Q*Q + (2.*x + b)*(2.*x + b)))))
+					(2.*X1 / (rs*x) + A * (2. / x - twoxb / X - 4.*b / (Q*Q + twoxb*twoxb) - (b*x0) / X0 * (2. / (x - x0) - twoxb / X - 4.*(2.*x0 + b) / (Q*Q + twoxb*twoxb))))
 					*(-rs / (3.*ro));
 			}
 
