@@ -68,9 +68,10 @@ namespace DFT {
 				const double X = x * x + b * x + c;
 				const double dx = 0.5 / x;
 				const double twoxb = 2 * x + b;
+				const double div = Q * Q + twoxb * twoxb;
 
 				res(i, 0) = dx *
-					(2.*X1 / (rs*x) + A * (2. / x - twoxb / X - 4.*b / (Q*Q + twoxb*twoxb) - (b*x0) / X0 * (2. / (x - x0) - twoxb / X - 4.*(2.*x0 + b) / (Q*Q + twoxb*twoxb))))
+					(2.*X1 / (rs*x) + A * (2. / x - twoxb / X - 4.*b / div - (b*x0) / X0 * (2. / (x - x0) - twoxb / X - 4.*(2.*x0 + b) / div)))
 					*(-rs / (3.*ro));
 			}
 

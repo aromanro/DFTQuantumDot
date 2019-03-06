@@ -15,7 +15,6 @@ namespace DFT {
 		{
 			assert(n.cols() == 1);
 
-
 			Eigen::MatrixXcd res(n.rows(), 1);
 
 
