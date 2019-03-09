@@ -18,7 +18,7 @@ namespace DFT {
 		{
 			assert(n.cols() == 1);
 			static const double
-				X1 = 0.610887057710857, // 0.75*pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
+				X1 = 0.75 * pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
 				A = 0.0310907,
 				x0 = -0.10498,
 				b = 3.72744,
@@ -50,7 +50,7 @@ namespace DFT {
 		{
 			assert(n.cols() == 1);
 			static const double
-				X1 = 0.610887057710857, // 0.75*pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
+				X1 = 0.75 * pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
 				A = 0.0310907,
 				x0 = -0.10498,
 				b = 3.72744,
