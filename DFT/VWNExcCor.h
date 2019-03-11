@@ -11,6 +11,11 @@ namespace DFT {
 	// see: http://muchomas.lassp.cornell.edu/P480/Psets/ps5/node37.html
 	// but be aware that the derivative from there is wrong
 
+	// you can find formula for correlation and parameters either in:
+	// Richard M. Martin, Electronic Structure, Basic Theory and Practical Methods, Appendix B, formula B.5
+	// or in Accurate spin-dependent electron liquid correlation energies for local spin density calculations: a critical analysis, by Vosko & All, formula 4.4, parameters are given with Table 5
+
+
 	class VWNExchCor
 	{
 	protected:
