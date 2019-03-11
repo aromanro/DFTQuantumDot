@@ -13,18 +13,20 @@ namespace DFT {
 
 	class VWNExchCor
 	{
+	protected:
+		static constexpr double A = 0.0310907; // actually 0.5 * A
+		static constexpr double x0 = -0.10498;
+		static constexpr double b = 3.72744;
+		static constexpr double c = 12.93532;
+		static constexpr double X0 = x0 * x0 + b * x0 + c;
+
 	public:
 		static Eigen::MatrixXcd exc(const Eigen::MatrixXcd& n)
 		{
 			assert(n.cols() == 1);
 			static const double
 				X1 = 0.75 * pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
-				A = 0.0310907,
-				x0 = -0.10498,
-				b = 3.72744,
-				c = 12.93532,
-				Q = sqrt(4 * c - b * b),
-				X0 = x0 * x0 + b * x0 + c;
+				Q = sqrt(4 * c - b * b);
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
@@ -51,12 +53,7 @@ namespace DFT {
 			assert(n.cols() == 1);
 			static const double
 				X1 = 0.75 * pow(3. / (2.*M_PI), 2. / 3.),  /* Exchange energy coeff */
-				A = 0.0310907,
-				x0 = -0.10498,
-				b = 3.72744,
-				c = 12.9352,
-				Q = sqrt(4 * c - b * b),
-				X0 = x0 * x0 + b * x0 + c;
+				Q = sqrt(4 * c - b * b);
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
