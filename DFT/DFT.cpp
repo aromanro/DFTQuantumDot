@@ -31,6 +31,7 @@ END_MESSAGE_MAP()
 // CDFTApp construction
 
 CDFTApp::CDFTApp()
+	: m_nAppLook(0)
 {
 	m_bHiColorIcons = TRUE;
 

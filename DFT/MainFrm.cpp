@@ -329,15 +329,16 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 
 void CMainFrame::OnViewOptions()
 {
-	COptionsPropertySheet sheet(L"Options", this);
+	COptionsPropertySheet* sheet = new COptionsPropertySheet(L"Options", this);
 
 	QDPropertyPage page1;
 	MinFindPropertyPage page2;
 
-	sheet.AddPage(&page1);
-	sheet.AddPage(&page2);
+	sheet->AddPage(&page1);
+	sheet->AddPage(&page2);
 
-	sheet.DoModal();
+	sheet->DoModal();
+	delete sheet;
 }
 
 

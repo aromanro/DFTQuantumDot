@@ -188,25 +188,27 @@ void CDFTView::OnDraw(CDC* pDC)
 		unsigned char *MemoryData = NULL;
 		HDC MemoryHdc = static_cast<HDC>(CreateCompatibleDC(pDC->GetSafeHdc()));
 		HBITMAP dib = CreateDIBSection(MemoryHdc, &MemoryDataHeader, DIB_RGB_COLORS, (void **)(&MemoryData), NULL, 0);
-
-		// copy the pixels over
-		if (MemoryData)
+		if (dib)
 		{
-			for (int i = 0; i < cyWindow; ++i)
-				for (int j = 0; j < cxWindow; ++j)
-				{
-					MemoryData[i*dataWidth + j * 3] = pixels[i*cxWindow * 3 + j * 3 + 2];
-					MemoryData[i*dataWidth + j * 3 + 1] = pixels[i*cxWindow * 3 + j * 3 + 1];
-					MemoryData[i*dataWidth + j * 3 + 2] = pixels[i*cxWindow * 3 + j * 3];
-				}
+			// copy the pixels over
+			if (MemoryData)
+			{
+				for (int i = 0; i < cyWindow; ++i)
+					for (int j = 0; j < cxWindow; ++j)
+					{
+						MemoryData[i * dataWidth + j * 3] = pixels[i * cxWindow * 3 + j * 3 + 2];
+						MemoryData[i * dataWidth + j * 3 + 1] = pixels[i * cxWindow * 3 + j * 3 + 1];
+						MemoryData[i * dataWidth + j * 3 + 2] = pixels[i * cxWindow * 3 + j * 3];
+					}
+			}
+
+			SelectObject(MemoryHdc, dib);
+			StretchBlt(pDC->GetSafeHdc(), 0, 0, x, y, MemoryHdc, 0, 0, cxWindow, cyWindow, SRCCOPY);
+
+			renWin->SetUseOffScreenBuffers(false);
+
+			DeleteObject(dib);
 		}
-
-		SelectObject(MemoryHdc, dib);
-		StretchBlt(pDC->GetSafeHdc(), 0, 0, x, y, MemoryHdc, 0, 0, cxWindow, cyWindow, SRCCOPY);
-
-		renWin->SetUseOffScreenBuffers(false);
-
-		DeleteObject(dib);
 		DeleteDC(MemoryHdc);
 
 		// in debug this crashes
