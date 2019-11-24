@@ -1,5 +1,4 @@
 #pragma once
-
 #include "DftSolver.h"
 
 namespace DFT {
@@ -11,9 +10,9 @@ namespace DFT {
 			template<class Solver> class SteepestDescent
 			{
 			public:
-				SteepestDescent(Solver &theSolver) : solver(theSolver) { }
+				SteepestDescent(Solver& theSolver) : solver(theSolver) { }
 
-				template<typename Derived> Eigen::MatrixXcd Descend(const Eigen::MatrixBase<Derived>& W, unsigned int iter = 600)
+				Eigen::MatrixXcd Descend(const Eigen::MatrixXcd& W, unsigned int iter = 600)
 				{
 					const double alpha = 0.00003;
 
@@ -44,10 +43,10 @@ namespace DFT {
 			template<class Solver, class Direction> class Minimization
 			{
 			public:
-				Minimization(Solver &theSolver) : solver(theSolver) {}
+				Minimization(Solver& theSolver) : solver(theSolver) {}
 
 
-				template<typename Derived> Eigen::MatrixXcd Descend(const Eigen::MatrixBase<Derived>& W, unsigned int iter = 600)
+				Eigen::MatrixXcd Descend(const Eigen::MatrixXcd& W, unsigned int iter = 600)
 				{
 					const double alphat = 0.00003;
 					double alpha = 0;
@@ -84,7 +83,7 @@ namespace DFT {
 
 						double dotdif = Solver::Dot(gradDif, dir);
 						if (abs(dotdif) < 1E-20) dotdif = 1E-20 * (dotdif < 0 ? -1 : 1);
-						
+
 						alpha = alphat * Solver::Dot(gradient, dir) / dotdif; // Compute estimate of best step				
 
 						res += alpha * dir;
@@ -100,7 +99,7 @@ namespace DFT {
 
 					return res;
 				}
-			
+
 			protected:
 				Solver& solver;
 			};
@@ -187,34 +186,34 @@ namespace DFT {
 		template<class Solver> class LineMinimization : public BaseClasses::Minimization<Solver, Helpers::GradDirection<Solver>>
 		{
 		public:
-			LineMinimization(Solver &solver) : BaseClasses::Minimization<Solver, Helpers::GradDirection<Solver>>(solver) {}
+			LineMinimization(Solver& solver) : BaseClasses::Minimization<Solver, Helpers::GradDirection<Solver>>(solver) {}
 		};
 
 		template<class Solver> class PreconditionedLineMinimization : public BaseClasses::Minimization<Solver, Helpers::KDirection<Solver>>
 		{
 		public:
-			PreconditionedLineMinimization(Solver &solver) : BaseClasses::Minimization<Solver, Helpers::KDirection<Solver>>(solver) {}
+			PreconditionedLineMinimization(Solver& solver) : BaseClasses::Minimization<Solver, Helpers::KDirection<Solver>>(solver) {}
 		};
 
 
 		template<class Solver> class FletcherReevesConjugateGradient : public BaseClasses::Minimization<Solver, Helpers::FletcherReeves<Solver>>
 		{
 		public:
-			FletcherReevesConjugateGradient(Solver &solver) : BaseClasses::Minimization<Solver, Helpers::FletcherReeves<Solver>>(solver) {}
+			FletcherReevesConjugateGradient(Solver& solver) : BaseClasses::Minimization<Solver, Helpers::FletcherReeves<Solver>>(solver) {}
 		};
 
 
 		template<class Solver> class PolakRibiereConjugateGradient : public BaseClasses::Minimization<Solver, Helpers::PolakRibiere<Solver>>
 		{
 		public:
-			PolakRibiereConjugateGradient(Solver &solver) : BaseClasses::Minimization<Solver, Helpers::PolakRibiere<Solver>>(solver) {}
+			PolakRibiereConjugateGradient(Solver& solver) : BaseClasses::Minimization<Solver, Helpers::PolakRibiere<Solver>>(solver) {}
 		};
 
 
 		template<class Solver> class HestenesStiefelConjugateGradient : public BaseClasses::Minimization<Solver, Helpers::HestenesStiefel<Solver>>
 		{
 		public:
-			HestenesStiefelConjugateGradient(Solver &solver) : BaseClasses::Minimization<Solver, Helpers::HestenesStiefel<Solver>>(solver) {}
+			HestenesStiefelConjugateGradient(Solver& solver) : BaseClasses::Minimization<Solver, Helpers::HestenesStiefel<Solver>>(solver) {}
 		};
 
 	}

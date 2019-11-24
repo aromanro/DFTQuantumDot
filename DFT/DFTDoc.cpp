@@ -317,7 +317,11 @@ void CDFTDoc::StartComputing(const Options& options)
 
 		// should I use this instead, or provide option to select? For molecules I get better results with VWN
 		//DFT::DftSolver<DFT::VWNExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3); 
-		DFT::DftSolver<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3);		
+		//DFT::DftSolver<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3);		
+
+		// above is the old implementation, here is the new one, with the 'compressed' solver (for details, please see the lecture referred on the compphys blog)
+		DFT::DftSolverCompressed<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3, options.Ns);
+		
 		DFT::QuantumDot<decltype(dftSolver)> quantumDot(dftSolver, 1 == options.harmonic);
 		dftSolver.fft.SetNumThreads(options.numThreadsFFT);
 
@@ -328,8 +332,9 @@ void CDFTDoc::StartComputing(const Options& options)
 
 
 
-		Eigen::MatrixXcd W = Eigen::MatrixXcd::Random(dftSolver.realSpaceCell.Samples(), options.Ns);
-		W = dftSolver.orthogonalize(W);
+		//Eigen::MatrixXcd W = Eigen::MatrixXcd::Random(dftSolver.realSpaceCell.Samples(), options.Ns);
+		//W = dftSolver.orthogonalize(W);
+		Eigen::MatrixXcd W = dftSolver.GetInitialState();
 
 		// *************************** fdtest ************************************************
 

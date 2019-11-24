@@ -218,6 +218,8 @@
     <ClInclude Include="DFT.h" />
     <ClInclude Include="DFTDoc.h" />
     <ClInclude Include="DftSolver.h" />
+    <ClInclude Include="DftSolverBase.h" />
+    <ClInclude Include="DftSolverCompressed.h" />
     <ClInclude Include="DFTView.h" />
     <ClInclude Include="ExcCor.h" />
     <ClInclude Include="FFT.h" />

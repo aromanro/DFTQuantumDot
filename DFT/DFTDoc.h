@@ -11,6 +11,7 @@
 #include <mutex>
 
 #include "DftSolver.h"
+#include "DftSolverCompressed.h"
 #include "QuantumDot.h"
 #include "SimpleDescent.h"
 

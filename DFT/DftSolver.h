@@ -1,206 +1,151 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 
-
-#include "FFT.h"
-#include "RealSpace.h"
-#include "ReciprocalSpace.h"
-
-#include <unsupported/Eigen/MatrixFunctions>
-
-
-#include "ExcCor.h"
+#include "DftSolverBase.h"
 
 namespace DFT {
 
-
-	template<class ExchCor> class DftSolver
+	// 'curiously recurring template pattern' - see SolvePoissonToRealSpace, getgrad and getPsi implementations in base class
+	template<class ExchCor> class DftSolver : public DftSolverBase<ExchCor, DftSolver<ExchCor>>
 	{
 	public:
-		DftSolver(double dim1, double dim2, double dim3, unsigned int samples1, unsigned int samples2, unsigned int samples3)
-			: realSpaceCell(dim1, dim2, dim3, samples1, samples2, samples3),
-			reciprocalCell(realSpaceCell),
-			f(1)
+		using _Mybase = DftSolverBase<ExchCor, DftSolver<ExchCor>>;
+
+		DftSolver(double dim1, double dim2, double dim3, unsigned int samples1, unsigned int samples2, unsigned int samples3, unsigned int Ns)
+			: _Mybase(dim1, dim2, dim3, samples1, samples2, samples3, Ns)
 		{
 		}
 
 
-		inline void SetPotential(const Eigen::MatrixXcd& V)
+		inline Eigen::MatrixXcd GetRandomState()
 		{
-			dualV = cJdagOcJ(V);
+			Eigen::MatrixXcd W = Eigen::MatrixXd::Random(_Mybase::realSpaceCell.Samples(), _Mybase::m_Ns);
+			return _Mybase::orthogonalize(W);
 		}
 
-		inline void SetReciprocalPotential(const Eigen::MatrixXcd& V)
+		inline Eigen::MatrixXcd GetInitialState() const
 		{
-			dualV = cJdag(V).real();
+			return _Mybase::orthogonalize(Eigen::MatrixXd::Random(_Mybase::realSpaceCell.Samples(), _Mybase::m_Ns));
 		}
 
-		template<typename Derived> inline static double Dot(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& b)
+		
+		inline Eigen::MatrixXcd GetInitialState(double molSize)
 		{
-			return (a.adjoint() * b).trace().real();
-		}
+			Eigen::MatrixXcd W = Eigen::MatrixXd::Random(_Mybase::realSpaceCell.Samples(), _Mybase::m_Ns);
 
-		template<typename Derived> inline Eigen::MatrixXcd SolvePoissonToReciprocalSpace(const Eigen::MatrixBase<Derived>& chargeDensity)
-		{
-			return -4. * M_PI * Linv(O(cJ(chargeDensity)));
-		}
+			const unsigned int size = _Mybase::realSpaceCell.Samples();
+			const Vector3D<double> center = _Mybase::realSpaceCell.GetSize() / 2.;
 
-		template<typename Derived> inline Eigen::MatrixXcd SolvePoissonToRealSpace(const Eigen::MatrixBase<Derived>& chargeDensity)
-		{
-			return cI(SolvePoissonToReciprocalSpace(chargeDensity)).real();
+			for (unsigned int i = 0; i < size; ++i)
+			{
+				const Vector3D<double> distanceVector(_Mybase::realSpaceCell.SamplePoints(i) - center);
+				const double len = distanceVector.Length();
+
+				if (len < molSize / 2)
+				{
+					for (unsigned int state = 0; state < _Mybase::m_Ns; ++state)
+						W(i, state) = 0;
+				}
+			}
+
+
+			for (unsigned int i = 0; i < _Mybase::m_Ns; ++i)
+				W.col(i).stableNormalize();
+
+			W = _Mybase::orthogonalize(_Mybase::cJdag(W));
+
+			return W;
 		}
+		
+
+		inline Eigen::MatrixXcd GetInitialState(const Eigen::MatrixXcd& Wapprox, unsigned int res)
+		{
+			Eigen::MatrixXcd W(_Mybase::realSpaceCell.Samples(), _Mybase::m_Ns);
+
+			const Vector3D<unsigned int>& samples = _Mybase::realSpaceCell.GetSamples();
+
+			for (unsigned int i = 0; i < _Mybase::m_Ns; ++i)
+			{
+				unsigned int index = 0;
+				for (unsigned int val1 = 0; val1 < samples.X; ++val1)
+					for (unsigned int val2 = 0; val2 < samples.Y; ++val2)
+						for (unsigned int val3 = 0; val3 < samples.Z; ++val3)
+						{
+							const unsigned int p1 = (unsigned int)floor(double(val1) / samples.X * res);
+							const unsigned int p2 = (unsigned int)floor(double(val2) / samples.Y * res);
+							const unsigned int p3 = (unsigned int)floor(double(val3) / samples.Z * res);
+
+							const unsigned int approxindex = (p1 * res + p2) * res + p3;
+
+							W(index, i) = Wapprox(approxindex, i);
+							++index;
+						}
+
+				W.col(i).stableNormalize();
+			}
+
+			W = _Mybase::orthogonalize(_Mybase::cJdag(W));
+
+			return W;
+		}
+		
+
 
 		//*********************************************************************************************
 
 		// if a square matrix, I and J operators are inverse of each other
 		// might be the case that it's not a square matrix, one might have only a few basis functions
 		// compared with the number of sample points in the real space
-		// that is not the case for the current program
+		// that is not the case for the current class
 		template<typename Derived> inline Eigen::MatrixXcd cI(const Eigen::MatrixBase<Derived>& in)
 		{
-			return FFT3D(in);
+			return _Mybase::FFT3D(in);
 		}
 
 		template<typename Derived> inline Eigen::MatrixXcd cIdag(const Eigen::MatrixBase<Derived>& in)
 		{
-			return InvFFT3D(in);
+			return _Mybase::InvFFT3D(in);
 		}
 
-		template<typename Derived> inline Eigen::MatrixXcd cJ(const Eigen::MatrixBase<Derived>& in)
-		{
-			const Eigen::MatrixXcd out = InvFFT3D(in);
-
-			const double norm = 1. / realSpaceCell.Samples();
-
-			return norm * out;
-		}
-
-
-		template<typename Derived> inline Eigen::MatrixXcd cJdag(const Eigen::MatrixBase<Derived>& in)
-		{
-			const Eigen::MatrixXcd out = FFT3D(in);
-		
-			const double norm = 1. / realSpaceCell.Samples();
-				
-			return norm * out;
-		}
-
-		template<typename Derived> inline Eigen::MatrixXcd cJdagOcJ(const Eigen::MatrixBase<Derived>& in)
-		{
-			return realSpaceCell.SampleVolume() * in;
-		}
 
 		//*********************************************************************************************
 
 
-		// overlap operator - it is diagonal for plane waves basis
-		template<typename Derived> inline Eigen::MatrixXcd O(const Eigen::MatrixBase<Derived>& in) const
-		{
-			return realSpaceCell.Volume() * in;
-		}
-
 		// Laplacian operator in reciprocal space
 		template<typename Derived> inline Eigen::MatrixXcd L(const Eigen::MatrixBase<Derived>& in) const
 		{
-			return -realSpaceCell.Volume() * (reciprocalCell.LatticeVectorsSquaredMagnitude * Eigen::MatrixXcd::Ones(1, in.cols())).cwiseProduct(in);
-		}
-
-		// inverse Laplacian operator in reciprocal space
-		template<typename Derived> Eigen::MatrixXcd Linv(const Eigen::MatrixBase<Derived>& in) const
-		{
-			Eigen::MatrixXcd out = -1. / realSpaceCell.Volume() * in.cwiseQuotient(reciprocalCell.LatticeVectorsSquaredMagnitude);
-
-			out(0) = 0;
-
-			return out;
-		}
-
-		template<typename Derived> inline Eigen::MatrixXcd diagouter(const Eigen::MatrixBase<Derived>& A, const Eigen::MatrixBase<Derived>& B) const
-		{
-			return A.cwiseProduct(B.conjugate()).rowwise().sum();			
-		}
-
-		template<typename Derived> inline Eigen::MatrixXcd Diagprod(const Eigen::MatrixBase<Derived>& a, const Eigen::MatrixBase<Derived>& B) const
-		{
-			return (a * Eigen::MatrixXcd::Ones(1, B.cols())).cwiseProduct(B);
+			return -_Mybase::realSpaceCell.Volume() * (_Mybase::reciprocalCell.LatticeVectorsSquaredMagnitude * Eigen::MatrixXcd::Ones(1, in.cols())).cwiseProduct(in);
 		}
 
 
-		inline Eigen::MatrixXcd getn(const Eigen::MatrixXcd& Psi)
-		{
-			Eigen::MatrixXcd IPsi = cI(Psi.col(0));
-			Eigen::MatrixXcd n = IPsi.cwiseProduct(IPsi.conjugate());
 
-			for (unsigned int col = 1; col < Psi.cols(); ++col)
-			{
-				IPsi = cI(Psi.col(col));
-				n += IPsi.cwiseProduct(IPsi.conjugate());
-			}
-
-			return f * n;
-		}
 
 		template<typename Derived> inline double getE(const Eigen::MatrixBase<Derived>& W)
 		{
 			// U is the overlap between wavefunctions - they might not be orthogonal
-			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
+			const Eigen::MatrixXcd Uinv = (W.adjoint() * _Mybase::O(W)).inverse();
 			const Eigen::MatrixXcd IW = cI(W);
 
-			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
+			const Eigen::MatrixXcd n = _Mybase::f * _Mybase::diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 
-			const double KineticEnergy = -0.5 * f * diagouter(L(W * Uinv), W).sum().real();
-			const double PotentialEnergy = (dualV.adjoint() * n + n.adjoint() * (0.5 * cJdag(O(SolvePoissonToReciprocalSpace(n))) + cJdagOcJ(ExchCor::exc(n))))(0).real();
-																							   
+			const double KineticEnergy = -0.5 * _Mybase::f * _Mybase::diagouter(L(W * Uinv), W).sum().real();
+			const double PotentialEnergy = (_Mybase::dualV.adjoint() * n + n.adjoint() * (0.5 * _Mybase::cJdag(_Mybase::O(_Mybase::SolvePoissonToReciprocalSpace(n))) + _Mybase::cJdagOcJ(_Mybase::excCor.exc(n))))(0).real();
+
 			return KineticEnergy + PotentialEnergy;
 		}
 
 		template<typename Derived> inline Eigen::MatrixXcd H(const Eigen::MatrixBase<Derived>& W)
 		{
 			// U is the overlap between wavefunctions - they might not be orthogonal
-			const Eigen::MatrixXcd Uinv = (W.adjoint() * O(W)).inverse();
+			const Eigen::MatrixXcd Uinv = (W.adjoint() * _Mybase::O(W)).inverse();
 			const Eigen::MatrixXcd IW = cI(W);
 
-			const Eigen::MatrixXcd n = f * diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
+			const Eigen::MatrixXcd n = _Mybase::f * _Mybase::diagouter((IW * Uinv).eval(), IW); // f * diag(density matrix) = f * diag(I * P * Idag)
 
-			const Eigen::MatrixXcd Veff = dualV + cJdag(O(SolvePoissonToReciprocalSpace(n))) + cJdagOcJ(ExchCor::exc(n)) + ExchCor::excDeriv(n).cwiseProduct(cJdagOcJ(n));
+			const Eigen::MatrixXcd Veff = _Mybase::dualV + _Mybase::cJdag(_Mybase::O(_Mybase::SolvePoissonToReciprocalSpace(n))) + _Mybase::cJdagOcJ(_Mybase::excCor.exc(n)) + _Mybase::excCor.excDeriv(n).cwiseProduct(_Mybase::cJdagOcJ(n));
 
-			return -0.5 * L(W) + cIdag(Diagprod(Veff, IW));
+			return -0.5 * L(W) + cIdag(_Mybase::Diagprod(Veff, IW));
 		}
-
-		template<typename Derived> inline Eigen::MatrixXcd getgrad(const Eigen::MatrixBase<Derived>& W)
-		{
-			const Eigen::MatrixXcd Wadj = W.adjoint();
-			const Eigen::MatrixXcd OW = O(W);
-			const Eigen::MatrixXcd Uinv = (Wadj * OW).inverse();
-			const Eigen::MatrixXcd HW = H(W);
-  
-			return f * (HW - (OW * Uinv).eval() * (Wadj * HW).eval()) * Uinv;
-		}
-
-		template<typename Derived> inline Eigen::MatrixXcd orthogonalize(const Eigen::MatrixBase<Derived>& W) const
-		{
-			const Eigen::MatrixXcd U = W.adjoint() * O(W);
-
-			return W * U.sqrt().inverse();
-		}
-
-
-		template<typename Derived> inline std::pair<Eigen::MatrixXcd, Eigen::VectorXcd> getPsi(const Eigen::MatrixBase<Derived>& W)
-		{
-			const Eigen::MatrixXcd Y = orthogonalize(W);
-			const Eigen::MatrixXcd mu = Y.adjoint() * H(Y); // <Yi|H|Yj> matrix
-
-			eigensolver.compute(mu);
-			
-			assert(eigensolver.info() == Eigen::ComputationInfo::Success);
-
-			const Eigen::MatrixXcd Psi = Y * eigensolver.eigenvectors();
-
-			return std::make_pair(Psi, eigensolver.eigenvalues());
-		}
-
 
 		// preconditioner
 		template<typename Derived> inline Eigen::MatrixXcd K(const Eigen::MatrixBase<Derived>& in) const
@@ -208,47 +153,10 @@ namespace DFT {
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 
 			for (unsigned int i = 0; i < in.cols(); ++i)
-				out.col(i) = in.col(i).cwiseQuotient(Eigen::MatrixXcd::Ones(in.rows(), 1) + reciprocalCell.LatticeVectorsSquaredMagnitude);
+				out.col(i) = in.col(i).cwiseQuotient(Eigen::MatrixXcd::Ones(in.rows(), 1) + _Mybase::reciprocalCell.LatticeVectorsSquaredMagnitude);
 
-			 return out;
-		}
-
-
-		RealSpaceCell realSpaceCell;
-		ReciprocalSpaceCell reciprocalCell;
-
-		Fourier::FFT fft;
-
-		unsigned int f; //occupancy, default 1, for the quantum dot 2
-	
-	protected:
-
-		template<typename Derived> inline Eigen::MatrixXcd FFT3D(const Eigen::MatrixBase<Derived>& in)
-		{
-			Eigen::MatrixXcd out(in.rows(), in.cols());
-		
-			for (unsigned int i = 0; i < in.cols(); ++i)
-				fft.fwd(in.col(i).data(), out.col(i).data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
-				
 			return out;
 		}
-
-
-		template<typename Derived> inline Eigen::MatrixXcd InvFFT3D(const Eigen::MatrixBase<Derived>& in)
-		{
-			Eigen::MatrixXcd out(in.rows(), in.cols());
-		
-			for (unsigned int i = 0; i < in.cols(); ++i)
-				fft.inv(in.col(i).data(), out.col(i).data(), realSpaceCell.GetSamples().X, realSpaceCell.GetSamples().Y, realSpaceCell.GetSamples().Z);
-				
-			return out;
-		}
-
-
-	private:
-		Eigen::MatrixXcd dualV;
-		Eigen::SelfAdjointEigenSolver<Eigen::MatrixXcd> eigensolver;
 	};
-
 
 }

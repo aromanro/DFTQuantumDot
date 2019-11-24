@@ -18,7 +18,7 @@ namespace DFT {
 	}
 
 
-	void ReciprocalSpaceCell::Init(const RealSpaceCell& realSpaceCell)
+	void ReciprocalSpaceCell::Init(const RealSpaceCell& realSpaceCell, double MaxFraction)
 	{
 		const Vector3D<double>& dim = realSpaceCell.GetSize();
 		const double twopi = 2. * M_PI;
@@ -48,6 +48,34 @@ namespace DFT {
 					
 					++i;
 				}
+
+		std::vector<int> edges;
+		const Vector3D<double> eS(realSpaceCell.GetSamples().X / 2. + 0.5, realSpaceCell.GetSamples().Y / 2. + 0.5, realSpaceCell.GetSamples().Z / 2. + 0.5);
+
+		for (int i = 0; i < realSpaceCell.Indices.rows(); ++i)
+		{
+			const Vector3D<double> dif = eS - realSpaceCell.Indices(i);
+
+			if (abs(dif.X) < 1 || abs(dif.Y) < 1 || abs(dif.Z) < 1)
+				edges.push_back(i);
+		}
+
+		if (!edges.empty())
+		{
+			double G2max = LatticeVectorsSquaredMagnitude(edges[0]);
+			for (int i = 1; i < edges.size(); ++i)
+				G2max = min(G2max, LatticeVectorsSquaredMagnitude(edges[i]));
+
+			G2max *= MaxFraction * MaxFraction;
+
+			for (int i = 0; i < LatticeVectorsSquaredMagnitude.rows(); ++i)
+				if (LatticeVectorsSquaredMagnitude(i) < G2max)
+					active.push_back(i);
+
+			LatticeVectorsSquaredMagnitudeCompressed.resize(active.size(), 1);
+			for (int i = 0; i < active.size(); ++i)
+				LatticeVectorsSquaredMagnitudeCompressed(i) = LatticeVectorsSquaredMagnitude(active[i]);
+		}
 	}
 
 }

@@ -87,6 +87,12 @@
     <ClInclude Include="VWNExcCor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DftSolverBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DftSolverCompressed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFT.cpp">
