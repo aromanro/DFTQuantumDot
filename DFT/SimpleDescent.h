@@ -12,10 +12,8 @@ namespace DFT {
 			public:
 				SteepestDescent(Solver& theSolver) : solver(theSolver) { }
 
-				Eigen::MatrixXcd Descend(const Eigen::MatrixXcd& W, unsigned int iter = 600)
+				Eigen::MatrixXcd Descend(const Eigen::MatrixXcd& W, unsigned int iter = 600, double alpha = 0.00003)
 				{
-					const double alpha = 0.00003;
-
 					Eigen::MatrixXcd res = W;
 
 					for (unsigned int i = 0; i < iter; ++i)
@@ -46,9 +44,8 @@ namespace DFT {
 				Minimization(Solver& theSolver) : solver(theSolver) {}
 
 
-				Eigen::MatrixXcd Descend(const Eigen::MatrixXcd& W, unsigned int iter = 600)
+				Eigen::MatrixXcd Descend(const Eigen::MatrixXcd& W, unsigned int iter = 600, double alphat = 0.00003)
 				{
-					const double alphat = 0.00003;
 					double alpha = 0;
 					double beta = 0;
 

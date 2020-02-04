@@ -360,42 +360,46 @@ void CDFTDoc::StartComputing(const Options& options)
 
 		// **********************************************************************************
 
+		const double alpha = 0.03;
+
 		DFT::SolutionFinders::BaseClasses::SteepestDescent<decltype(dftSolver)> steepestDescent(dftSolver);
-		W = steepestDescent.Descend(W, options.SteepestDescentSteps);
+		W = steepestDescent.Descend(W, options.SteepestDescentSteps, alpha);
 
 		W = dftSolver.orthogonalize(W);
+
+		const double alphat = 0.003;
 
 		switch (options.algorithm)
 		{
 		case 0:
 		{
 			DFT::SolutionFinders::LineMinimization<decltype(dftSolver)> lmDescent(dftSolver);
-			W = lmDescent.Descend(W, options.MinFindSteps);
+			W = lmDescent.Descend(W, options.MinFindSteps, alphat);
 		}
 		break;
 		case 1:
 		{
 			DFT::SolutionFinders::PreconditionedLineMinimization<decltype(dftSolver)> preLmDescent(dftSolver);
-			W = preLmDescent.Descend(W, options.MinFindSteps);
+			W = preLmDescent.Descend(W, options.MinFindSteps, alphat);
 		}
 		break;
 		case 2:
 		{
 			DFT::SolutionFinders::PolakRibiereConjugateGradient<decltype(dftSolver)> precgDescent(dftSolver);
-			W = precgDescent.Descend(W, options.MinFindSteps);
+			W = precgDescent.Descend(W, options.MinFindSteps, alphat);
 		}
 		break;
 		case 3:
 		{
 			DFT::SolutionFinders::HestenesStiefelConjugateGradient<decltype(dftSolver)> precgDescent(dftSolver);
-			W = precgDescent.Descend(W, options.MinFindSteps);
+			W = precgDescent.Descend(W, options.MinFindSteps, alphat);
 		}
 		break;
 		case 4:
 		default:
 		{
 			DFT::SolutionFinders::FletcherReevesConjugateGradient<decltype(dftSolver)> precgDescent(dftSolver);
-			W = precgDescent.Descend(W, options.MinFindSteps);
+			W = precgDescent.Descend(W, options.MinFindSteps, alphat);
 		}
 		break;
 		}
