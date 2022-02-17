@@ -31,8 +31,7 @@ protected: // create from serialization only
 	DECLARE_DYNCREATE(CDFTDoc)
 
 // Attributes
-public:
-	
+public:	
 	int displayLevel;
 
 	std::atomic_bool computingFinished;
@@ -44,9 +43,7 @@ public:
 
 // Operations
 public:
-
 // Overrides
-public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
 #ifdef SHARED_HANDLERS
@@ -63,9 +60,7 @@ public:
 #endif
 
 protected:
-
 // Generated message map functions
-protected:
 	DECLARE_MESSAGE_MAP()
 
 #ifdef SHARED_HANDLERS

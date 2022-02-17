@@ -314,7 +314,6 @@ void CDFTDoc::StartComputing(const Options& options)
 	SetTitle(L"Computing...");
 
 	std::thread([this, options]() {
-
 		// should I use this instead, or provide option to select? For molecules I get better results with VWN
 		//DFT::DftSolver<DFT::VWNExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3); 
 		//DFT::DftSolver<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3);		

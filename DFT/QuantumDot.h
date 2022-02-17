@@ -25,8 +25,7 @@ namespace DFT {
 				if (harmonic)
 					V(i) = 2. * distanceVector * distanceVector;
 				else
-					V(i) = 4. * distanceVector.Length();
-					
+					V(i) = 4. * distanceVector.Length();					
 			}
 
 			dftSolver.SetPotential(V);

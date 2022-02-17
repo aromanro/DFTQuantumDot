@@ -111,6 +111,7 @@ protected: // create from serialization only
 	CDFTView();
 	DECLARE_DYNCREATE(CDFTView)
 
+	static bool IsHandledMessage(UINT message);
 // Attributes
 public:
 	CDFTDoc* GetDocument() const;

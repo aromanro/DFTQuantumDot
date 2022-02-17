@@ -168,7 +168,6 @@ namespace DFT {
 		std::atomic_bool terminate;
 	
 	protected:
-
 		inline Eigen::MatrixXcd FFT3D(const Eigen::MatrixXcd& in)
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());

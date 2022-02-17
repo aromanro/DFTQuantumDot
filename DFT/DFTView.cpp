@@ -373,27 +373,22 @@ void CDFTView::OnInitialUpdate()
 	timer = SetTimer(1, 300, NULL);
 }
 
+bool IsHandledMessage(UINT message)
+{
+	return message == WM_LBUTTONDOWN || message == WM_LBUTTONUP || message == WM_MBUTTONDOWN || message == WM_MBUTTONUP ||
+		message == WM_RBUTTONDOWN || message == WM_RBUTTONUP || message == WM_MOUSEMOVE || message == WM_CHAR || message == WM_TIMER;
+}
 
 LRESULT CDFTView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch (message)
+	if (IsHandledMessage(message))
 	{
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_MBUTTONDOWN:
-	case WM_MBUTTONUP:
-	case WM_RBUTTONDOWN:
-	case WM_RBUTTONUP:
-	case WM_MOUSEMOVE:
-	case WM_CHAR:
-	case WM_TIMER:
 		if (iren && iren->GetInitialized() && GetSafeHwnd())
 		{
 			LRESULT res  = vtkHandleMessage(GetSafeHwnd(), message, wParam, lParam);
 			//LRESULT res = vtkHandleMessage2(GetSafeHwnd(), message, wParam, lParam, iren);
 			if (message != WM_TIMER || wParam != timer) return res;
 		}
-		break;
 	}
 
 	return CView::WindowProc(message, wParam, lParam);

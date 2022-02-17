@@ -61,7 +61,6 @@ namespace DFT {
 
 			return res;
 		}
-
 	};
 
 }

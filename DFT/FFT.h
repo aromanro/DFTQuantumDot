@@ -151,6 +151,7 @@ namespace Fourier {
 			}
 			fftw_execute_dft_c2r(plan, src, dst);
 		}
+
 	protected:
 		fftw_plan plan;
 	};
