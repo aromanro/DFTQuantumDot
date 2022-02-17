@@ -25,6 +25,8 @@ namespace DFT {
 		std::vector<unsigned int> active;
 		Eigen::Matrix<double, Eigen::Dynamic, 1> LatticeVectorsSquaredMagnitudeCompressed;
 	protected:
+		void Compress(const RealSpaceCell& realSpaceCell, double MaxFraction);
+
 		Vector3D<double> m_dim;
 
 		double volume;

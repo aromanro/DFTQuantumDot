@@ -49,6 +49,12 @@ namespace DFT {
 					++i;
 				}
 
+		Compress(realSpaceCell, MaxFraction);
+	}
+
+
+	void ReciprocalSpaceCell::Compress(const RealSpaceCell& realSpaceCell, double MaxFraction)
+	{
 		std::vector<int> edges;
 		const Vector3D<double> eS(realSpaceCell.GetSamples().X / 2. + 0.5, realSpaceCell.GetSamples().Y / 2. + 0.5, realSpaceCell.GetSamples().Z / 2. + 0.5);
 
