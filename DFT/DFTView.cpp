@@ -373,7 +373,7 @@ void CDFTView::OnInitialUpdate()
 	timer = SetTimer(1, 300, NULL);
 }
 
-bool IsHandledMessage(UINT message)
+bool CDFTView::IsHandledMessage(UINT message)
 {
 	return message == WM_LBUTTONDOWN || message == WM_LBUTTONUP || message == WM_MBUTTONDOWN || message == WM_MBUTTONUP ||
 		message == WM_RBUTTONDOWN || message == WM_RBUTTONUP || message == WM_MOUSEMOVE || message == WM_CHAR || message == WM_TIMER;
