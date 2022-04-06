@@ -154,7 +154,7 @@ namespace DFT {
 		// Laplacian operator in reciprocal space
 		inline Eigen::MatrixXcd L(const Eigen::MatrixXcd& in) const
 		{
-			if (in.rows() == _Mybase::reciprocalCell.active.size())
+			if (static_cast<size_t>(in.rows()) == _Mybase::reciprocalCell.active.size())
 				return -_Mybase::realSpaceCell.Volume() * (_Mybase::reciprocalCell.LatticeVectorsSquaredMagnitudeCompressed * Eigen::MatrixXcd::Ones(1, in.cols())).cwiseProduct(in);
 
 			return -_Mybase::realSpaceCell.Volume() * (_Mybase::reciprocalCell.LatticeVectorsSquaredMagnitude * Eigen::MatrixXcd::Ones(1, in.cols())).cwiseProduct(in);
@@ -193,7 +193,7 @@ namespace DFT {
 		{
 			Eigen::MatrixXcd out(in.rows(), in.cols());
 
-			if (in.rows() == _Mybase::reciprocalCell.active.size())
+			if (static_cast<size_t>(in.rows()) == _Mybase::reciprocalCell.active.size())
 				for (unsigned int i = 0; i < in.cols(); ++i)
 					out.col(i) = in.col(i).cwiseQuotient(Eigen::MatrixXcd::Ones(in.rows(), 1) + _Mybase::reciprocalCell.LatticeVectorsSquaredMagnitudeCompressed);
 			else
