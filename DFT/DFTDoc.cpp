@@ -417,8 +417,8 @@ void CDFTDoc::StartComputing(const Options& options)
 			AfxMessageBox(str);
 			*/
 
-			Eigen::VectorXcd stateReciprocal = ps.first.col(state);
-			Eigen::VectorXcd psi = dftSolver.cI(stateReciprocal);
+			const Eigen::VectorXcd stateReciprocal = ps.first.col(state);
+			const Eigen::VectorXcd psi = dftSolver.cI(stateReciprocal);
 
 			computingResults.wavefunctions[state] = psi;
 		}
