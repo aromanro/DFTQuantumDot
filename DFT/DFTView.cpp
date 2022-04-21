@@ -346,6 +346,14 @@ void CDFTView::OnInitialUpdate()
 
 	vtkVolumeProperty* volumeProperty = volume->GetProperty();
 
+	/*
+	vtkSmartPointer<vtkPiecewiseFunction> opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
+	opacityTransferFunction->AddPoint(0.0, 0);
+	opacityTransferFunction->AddPoint(1., 0.2);
+
+	volumeProperty->SetScalarOpacity(opacityTransferFunction);
+	*/
+
 	vtkSmartPointer<vtkColorTransferFunction> colorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
 	colorTransferFunction->SetColorSpaceToRGB();
 	colorTransferFunction->AddRGBPoint(0, 1., 0, 0);
