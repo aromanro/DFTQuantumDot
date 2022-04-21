@@ -26,5 +26,8 @@ public:
 
 	std::vector<Eigen::VectorXcd> wavefunctions;
 	void FreeSomeMemory();
+
+protected:
+	template<class T> void FreeVector(std::vector<T>& v);
 };
 

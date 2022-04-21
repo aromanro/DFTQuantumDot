@@ -16,11 +16,18 @@ QDResults::~QDResults()
 
 void QDResults::FreeSomeMemory()
 {
-	wavefunctions.resize(0);
+	FreeVector(wavefunctions);
+	
 	realSpaceCell.Indices.resize(0);
 	realSpaceCell.SamplePoints.resize(0);
 
 	reciprocalCell.Indices.resize(0);
 	reciprocalCell.LatticeVectors.resize(0);
 	reciprocalCell.LatticeVectorsSquaredMagnitude.resize(0);
+}
+
+template<class T> void QDResults::FreeVector(std::vector<T>& v)
+{
+	std::vector<T> empty;
+	v.swap(empty);
 }
