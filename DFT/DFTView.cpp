@@ -318,13 +318,13 @@ void CDFTView::OnInitialUpdate()
 
 	// now the other ones
 
-	ren->SetBackground(0.1, 0.3, 0.4);
+	ren->SetBackground(1, 1, 1);
 
 	// camera
 
 	ren->GetActiveCamera()->SetFocalPoint(results.realSpaceCell.GetSize().X / 2, results.realSpaceCell.GetSize().Y / 2, results.realSpaceCell.GetSize().Z / 2);
 	ren->GetActiveCamera()->SetPosition(results.realSpaceCell.GetSize().X, results.realSpaceCell.GetSize().Y * 2, results.realSpaceCell.GetSize().Z * 3);
-	ren->GetActiveCamera()->ComputeViewPlaneNormal();
+	//ren->GetActiveCamera()->ComputeViewPlaneNormal();
 
 	// text
 
@@ -346,20 +346,27 @@ void CDFTView::OnInitialUpdate()
 
 	vtkVolumeProperty* volumeProperty = volume->GetProperty();
 
-	/*
-	vtkSmartPointer<vtkPiecewiseFunction> opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
-	opacityTransferFunction->AddPoint(0.0, 0);
-	opacityTransferFunction->AddPoint(1., 0.2);
-
-	volumeProperty->SetScalarOpacity(opacityTransferFunction);
-	*/
-
 	vtkSmartPointer<vtkColorTransferFunction> colorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
 	colorTransferFunction->SetColorSpaceToRGB();
-	colorTransferFunction->AddRGBPoint(0, 1., 0, 0);
+	colorTransferFunction->AddRGBPoint(0, 0, 0, 1);
 	colorTransferFunction->AddRGBPoint(results.maxs[1], 1., 0, 0);
 	volumeProperty->SetColor(colorTransferFunction);
 
+	vtkSmartPointer<vtkPiecewiseFunction> opacityTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
+	opacityTransferFunction->AddPoint(0.0, 0);
+	opacityTransferFunction->AddPoint(1., 1);
+
+	volumeProperty->SetScalarOpacity(opacityTransferFunction);
+	volumeProperty->SetScalarOpacityUnitDistance(results.realSpaceCell.GetSize().X / 8);
+	//volumeProperty->SetScalarOpacityUnitDistance(0.1);
+
+	/*
+	vtkSmartPointer<vtkPiecewiseFunction> gradientTransferFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
+	gradientTransferFunction->AddPoint(0.0, 0);
+	gradientTransferFunction->AddPoint(0.05, 0.9);
+	gradientTransferFunction->AddPoint(1, 1);
+	volumeProperty->SetGradientOpacity(gradientTransferFunction);
+	*/
 
 	volumeProperty->ShadeOn();
 	//volumeProperty->ShadeOff();
