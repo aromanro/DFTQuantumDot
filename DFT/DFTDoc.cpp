@@ -319,7 +319,8 @@ void CDFTDoc::StartComputing(const Options& options)
 		//DFT::DftSolver<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3);		
 
 		// above is the old implementation, here is the new one, with the 'compressed' solver (for details, please see the lecture referred on the compphys blog)
-		DFT::DftSolverCompressed<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3, options.Ns);
+		//DFT::DftSolverCompressed<DFT::ChachiyoExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3, options.Ns);
+		DFT::DftSolverCompressed<DFT::VWNExchCor> dftSolver(options.dim1, options.dim2, options.dim3, options.samples1, options.samples2, options.samples3, options.Ns);
 		
 		DFT::QuantumDot<decltype(dftSolver)> quantumDot(dftSolver, 1 == options.harmonic);
 		dftSolver.fft.SetNumThreads(options.numThreadsFFT);
