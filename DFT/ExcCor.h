@@ -62,7 +62,7 @@ namespace DFT {
 
 		static Eigen::MatrixXcd excDeriv(const Eigen::MatrixXcd& n)
 		{
-			static const double X1 = pow(3. / (2. * M_PI), 2. / 3.);  // Exchange energy coefficient
+			static const double X1 = 0.25 * pow(3. / (2. * M_PI), 2. / 3.);  // Exchange energy coefficient
 			assert(n.cols() == 1);
 
 			Eigen::MatrixXcd res(n.rows(), 1);
@@ -79,7 +79,7 @@ namespace DFT {
 				const double bprs = b / rs;
 				const double bprs2 = bprs / rs;
 
-				res(i, 0) -= a / (1. + bprs + bprs2) * (bprs + 2. * bprs2) / 3.;
+				res(i, 0) += a / (1. + bprs + bprs2) * (bprs + 2. * bprs2) * rs / 3.;
 			}
 
 			return res;
