@@ -35,7 +35,7 @@ namespace DFT {
 		static constexpr double threeDivM_PI = 3. / M_PI;
 
 	public:
-		static Eigen::MatrixXcd exc(const Eigen::MatrixXcd& n)
+		static Eigen::MatrixXcd Vexc(const Eigen::MatrixXcd& n)
 		{
 			static const double	X1 = pow(3. / (2. * M_PI), 2. / 3.);  // Exchange energy coefficient
 			assert(n.cols() == 1);

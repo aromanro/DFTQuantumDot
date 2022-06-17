@@ -33,11 +33,12 @@ namespace DFT {
 		static constexpr double Y0F = y0F * y0F + bF * y0F + cF;
 
 		// values for 'spin stiffness' (useful for LSDA)
+		// values for 'spin stiffness' (useful for LSDA)
 		static constexpr double Aalpha = -1. / (6. * M_PI * M_PI); // actually 0.5 * A
-		static constexpr double y0Falpha = -0.0047584;
-		static constexpr double bFalpha = 1.13107;
-		static constexpr double cFalpha = 13.0045;
-		static constexpr double Y0Falpha = y0Falpha * y0Falpha + bFalpha * y0Falpha + cFalpha;
+		static constexpr double y0alpha = -0.0047584;
+		static constexpr double balpha = 1.13107;
+		static constexpr double calpha = 13.0045;
+		static constexpr double Y0alpha = y0alpha * y0alpha + balpha * y0alpha + calpha;
 
 		inline static double F(double y /*sqrt(rs)*/, double dify /*y - y0*/, double A, double y0, double b, double c, double Y0, double Y)
 		{
@@ -60,7 +61,7 @@ namespace DFT {
 		}
 
 	public:
-		static Eigen::MatrixXcd exc(const Eigen::MatrixXcd& n)
+		static Eigen::MatrixXcd Vexc(const Eigen::MatrixXcd& n)
 		{
 			static const double	X1 = pow(3. / (2. * M_PI), 2. / 3.);  // Exchange energy coefficient
 			assert(n.cols() == 1);

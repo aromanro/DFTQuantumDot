@@ -166,7 +166,7 @@ namespace DFT {
 			const Eigen::MatrixXcd n = _Mybase::getn(Y);
 
 			const double KineticEnergy = -0.5 * _Mybase::f * _Mybase::diagouter(L(Y), Y).sum().real();
-			const double PotentialEnergy = (_Mybase::dualV.adjoint() * n + n.adjoint() * (0.5 * _Mybase::cJdag(_Mybase::O(_Mybase::SolvePoissonToReciprocalSpace(n))) + _Mybase::cJdagOcJ(_Mybase::excCor.exc(n))))(0).real();
+			const double PotentialEnergy = (_Mybase::dualV.adjoint() * n + n.adjoint() * (0.5 * _Mybase::cJdag(_Mybase::O(_Mybase::SolvePoissonToReciprocalSpace(n))) + _Mybase::cJdagOcJ(_Mybase::excCor.Vexc(n))))(0).real();
 																							   
 			return KineticEnergy + PotentialEnergy;
 		}
@@ -176,7 +176,7 @@ namespace DFT {
 			const Eigen::MatrixXcd Y = _Mybase::orthogonalize(W);
 			const Eigen::MatrixXcd n = _Mybase::getn(Y);
 
-			const Eigen::MatrixXcd Veff = _Mybase::dualV + _Mybase::cJdag(_Mybase::O(_Mybase::SolvePoissonToReciprocalSpace(n))) + _Mybase::cJdagOcJ(_Mybase::excCor.exc(n)) + _Mybase::excCor.excDeriv(n).cwiseProduct(_Mybase::cJdagOcJ(n));
+			const Eigen::MatrixXcd Veff = _Mybase::dualV + _Mybase::cJdag(_Mybase::O(_Mybase::SolvePoissonToReciprocalSpace(n))) + _Mybase::cJdagOcJ(_Mybase::excCor.Vexc(n)) + _Mybase::excCor.excDeriv(n).cwiseProduct(_Mybase::cJdagOcJ(n));
 
 			Eigen::MatrixXcd H = -0.5 * L(Y);
 
