@@ -71,6 +71,11 @@ namespace DFT {
 			for (int i = 0; i < n.size(); ++i)
 			{
 				const double ro = n(i, 0).real();
+				if (ro < 1E-18)
+				{
+					res(i, 0) = 0;
+					continue;
+				}
 
 				const double rs = pow(3. / (fourM_PI*ro), 1. / 3.);
 				const double y = sqrt(rs);
@@ -98,6 +103,12 @@ namespace DFT {
 			for (int i = 0; i < n.size(); ++i)
 			{
 				const double ro = n(i, 0).real();
+				if (ro < 1E-18)
+				{
+					res(i, 0) = 0;
+					continue;
+				}
+
 				const double rs = pow(3. / (fourM_PI * ro), 1. / 3.);
 
 				const double y = sqrt(rs);
