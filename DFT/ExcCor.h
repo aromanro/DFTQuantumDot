@@ -1,6 +1,6 @@
 #pragma once
-#define _USE_MATH_DEFINES
-#include <math.h>
+
+#include "ExcCorBase.h"
 
 #include <vector>
 
@@ -22,7 +22,7 @@ namespace DFT {
 		static constexpr double b1 = 28.3559732;
 	};
 
-	template<class Params> class ChachiyoExchCor
+	template<class Params> class ChachiyoExchCor : public ExcCorBase
 	{
 	protected:
 		static constexpr double a = (M_LN2 - 1.) / (2. * M_PI * M_PI);
@@ -97,14 +97,6 @@ namespace DFT {
 			}
 
 			return res;
-		}
-
-	protected:
-		inline static double f(double zeta)
-		{
-			static const double div = 2. * (pow(2., 1. / 3.) - 1.);
-
-			return (pow(1. + zeta, 4. / 3.) + pow(1. - zeta, 4. / 3.) - 2.) / div; // eq 5 from NIST
 		}
 	};
 

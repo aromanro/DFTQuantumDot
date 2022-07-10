@@ -226,6 +226,7 @@
     <ClInclude Include="DftSolverCompressed.h" />
     <ClInclude Include="DFTView.h" />
     <ClInclude Include="ExcCor.h" />
+    <ClInclude Include="ExcCorBase.h" />
     <ClInclude Include="FFT.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MinFindPropertyPage.h" />

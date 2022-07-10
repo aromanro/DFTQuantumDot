@@ -93,6 +93,9 @@
     <ClInclude Include="DftSolverCompressed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ExcCorBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DFT.cpp">
