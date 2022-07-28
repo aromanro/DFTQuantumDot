@@ -231,7 +231,7 @@ namespace DFT {
 					-deriv;
 
 				// derivative with respect to zeta
-				double dterm = eca / fdd * (4. * beta * zeta3 * fval + opbz4 * dfval);
+				const double dterm = eca / fdd * (4. * beta * zeta3 * fval + opbz4 * dfval);
 
 				va(i, 0) = exfa + res(i, 0) + (1. - zeta) * dterm;
 				vb(i, 0) = exfb + res(i, 0) - (1. + zeta) * dterm;
