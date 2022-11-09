@@ -114,6 +114,9 @@ namespace DFT {
 		//*********************************************************************************************
 
 		// if a square matrix, I and J operators are inverse of each other
+		// as in cJ = cI^-1 and cJdag = cIdag^-1
+		// preserving the normalization (if needed) is done in cJ and cJdag (see their implementation in DftSolverBase for the details)
+		// as FFTW doesn't do it
 		// here we have the case that it's not a square matrix, we have fewer basis functions
 		// compared with the number of sample points in the real space
 
