@@ -159,7 +159,7 @@ namespace Fourier {
 	class FFT
 	{
 	public:
-		FFT(int numThreads = 0); // zero means let it alone for FFTW to decide
+		explicit FFT(int numThreads = 0); // zero means let it alone for FFTW to decide
 		~FFT();
 
 		// 1D
@@ -245,6 +245,7 @@ namespace Fourier {
 		{
 			return Plans3D[std::tuple<bool, bool, bool, bool, unsigned int, unsigned int, unsigned int>(InPlace(src, dst), Aligned(src, dst), inverse, differentTypes, n0, n1, n2)];
 		}
+
 	public:
 		void SetNumThreads(int numThreads);
 	};
