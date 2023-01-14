@@ -168,7 +168,7 @@ void CDFTView::OnDraw(CDC* pDC)
 		renWin->SetUseOffScreenBuffers(true);
 		renWin->Render();
 
-		const unsigned char *pixels = renWin->GetPixelData(0, 0, cxWindow - 1, cyWindow - 1, 0);
+		const unsigned char *pixels = renWin->GetPixelData(0, 0, cxWindow - 1, cyWindow - 1, 0, NULL);
 
 		int dataWidth = ((cxWindow * 3 + 3) / 4) * 4;
 
