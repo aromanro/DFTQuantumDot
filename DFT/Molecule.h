@@ -41,6 +41,7 @@ namespace DFT {
 				Z[i] = Zvals[i];
 
 			const int size = dftSolver.realSpaceCell.Samples();
+			const double invSamples = dftSolver.realSpaceCell.InvSamples();
 			
 			// structure factor
 			StructureFactor = Eigen::VectorXcd::Zero(size);
@@ -69,11 +70,8 @@ namespace DFT {
 			solver.fft.fwd(g.data(), rg.data(), dftSolver.realSpaceCell.GetSamples().X, dftSolver.realSpaceCell.GetSamples().Y, dftSolver.realSpaceCell.GetSamples().Z);
 
 			for (int i = 0; i < size; ++i)
-			{
-				rg(i) *= StructureFactor(i);
-				rg(i) /= size;
-			}
-
+				rg(i) *= StructureFactor(i) * invSamples;
+}
 			NuclearChargeDensity.resize(size);
 			solver.fft.inv(rg.data(), NuclearChargeDensity.data(), dftSolver.realSpaceCell.GetSamples().X, dftSolver.realSpaceCell.GetSamples().Y, dftSolver.realSpaceCell.GetSamples().Z);
 

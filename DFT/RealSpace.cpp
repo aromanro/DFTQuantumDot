@@ -5,7 +5,7 @@ namespace DFT {
 
 	RealSpaceCell::RealSpaceCell(double dim1, double dim2, double dim3, unsigned int samples1, unsigned int samples2, unsigned int samples3)
 		: m_dim(dim1, dim2, dim3), m_samples(samples1, samples2, samples3), 
-		volume(dim1*dim2*dim3), samples(samples1*samples2*samples3), sampleVolume(volume/samples),
+		volume(dim1*dim2*dim3), samples(samples1*samples2*samples3), invSamples(1. / samples), sampleVolume(volume * invSamples),
 		Indices(samples, 1), SamplePoints(samples, 1)
 	{
 		Vector3D<double> spacing(m_dim.X / m_samples.X, m_dim.Y / m_samples.Y, m_dim.Z / m_samples.Z);

@@ -63,7 +63,7 @@ namespace DFT {
 		{
 			const Eigen::MatrixXcd out = InvFFT3D(in);
 
-			const double norm = 1. / realSpaceCell.Samples();
+			const double norm = realSpaceCell.InvSamples();
 
 			return norm * out;
 		}
@@ -73,7 +73,7 @@ namespace DFT {
 		{
 			const Eigen::MatrixXcd out = FFT3D(in);
 		
-			const double norm = 1. / realSpaceCell.Samples();
+			const double norm = realSpaceCell.InvSamples();
 				
 			return norm * out;
 		}

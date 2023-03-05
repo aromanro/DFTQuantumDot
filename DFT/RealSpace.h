@@ -20,6 +20,7 @@ namespace DFT {
 
 		double Volume() const { return volume; }
 		int Samples() const { return samples; }
+		double InvSamples() const { return invSamples; }
 		double SampleVolume() const { return sampleVolume; }
 
 	protected:
@@ -28,6 +29,7 @@ namespace DFT {
 
 		double volume;
 		unsigned int samples;
+		double invSamples;
 		double sampleVolume;
 	public:
 		Eigen::Matrix<Vector3D<unsigned int>, Eigen::Dynamic, 1> Indices;
