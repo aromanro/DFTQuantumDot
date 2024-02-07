@@ -76,7 +76,7 @@ END_MESSAGE_MAP()
 // CDFTView construction/destruction
 
 CDFTView::CDFTView()
-	: ren(nullptr), iren(nullptr), renWin(nullptr), volumeMapper(nullptr), volume(nullptr), timer(NULL)
+	: ren(nullptr), iren(nullptr), renWin(nullptr), volumeMapper(nullptr), volume(nullptr), timer(0)
 {
 	errorObserver = ErrorObserver::New();
 	errorObserver->theView = this;
@@ -168,7 +168,7 @@ void CDFTView::OnDraw(CDC* pDC)
 		renWin->SetUseOffScreenBuffers(true);
 		renWin->Render();
 
-		const unsigned char *pixels = renWin->GetPixelData(0, 0, cxWindow - 1, cyWindow - 1, 0, NULL);
+		const unsigned char *pixels = renWin->GetPixelData(0, 0, cxWindow - 1, cyWindow - 1, 0, 0);
 
 		int dataWidth = ((cxWindow * 3 + 3) / 4) * 4;
 
@@ -185,9 +185,9 @@ void CDFTView::OnDraw(CDC* pDC)
 		MemoryDataHeader.bmiHeader.biXPelsPerMeter = 10000;
 		MemoryDataHeader.bmiHeader.biYPelsPerMeter = 10000;
 
-		unsigned char *MemoryData = NULL;
+		unsigned char *MemoryData = nullptr;
 		HDC MemoryHdc = static_cast<HDC>(CreateCompatibleDC(pDC->GetSafeHdc()));
-		HBITMAP dib = CreateDIBSection(MemoryHdc, &MemoryDataHeader, DIB_RGB_COLORS, (void **)(&MemoryData), NULL, 0);
+		HBITMAP dib = CreateDIBSection(MemoryHdc, &MemoryDataHeader, DIB_RGB_COLORS, (void **)(&MemoryData), nullptr, 0);
 		if (dib)
 		{
 			// copy the pixels over
@@ -385,7 +385,7 @@ void CDFTView::OnInitialUpdate()
 	iren->Initialize();
 	renWin->SetSize(rect.right - rect.left, rect.bottom - rect.top);
 
-	timer = SetTimer(1, 300, NULL);
+	timer = SetTimer(1, 300, nullptr);
 }
 
 bool CDFTView::IsHandledMessage(UINT message)
@@ -418,7 +418,7 @@ void CDFTView::RecoverFromWarning()
 	pDoc->displayLevel = saveLastViewOrbital;
 	saveLastViewOrbital = saveLevel;
 
-	pDoc->UpdateAllViews(NULL);
+	pDoc->UpdateAllViews(nullptr);
 }
 
 void CDFTView::Pipeline()
@@ -503,7 +503,7 @@ void CDFTView::OnTimer(UINT_PTR nIDEvent)
 
 		pDoc->SetTitle(L"Orbitals");
 
-		pDoc->UpdateAllViews(NULL);
+		pDoc->UpdateAllViews(nullptr);
 	}
 }
 

@@ -133,9 +133,9 @@ void CDFTDoc::SetSearchContent(const CString& value)
 	}
 	else
 	{
-		CMFCFilterChunkValueImpl *pChunk = NULL;
+		CMFCFilterChunkValueImpl *pChunk = nullptr;
 		ATLTRY(pChunk = new CMFCFilterChunkValueImpl);
-		if (pChunk != NULL)
+		if (pChunk != nullptr)
 		{
 			pChunk->SetTextValue(PKEY_Search_Contents, value, CHUNK_TEXT);
 			SetChunkValue(pChunk);
@@ -166,7 +166,7 @@ void CDFTDoc::Dump(CDumpContext& dc) const
 void CDFTDoc::OnLevel1()
 {
 	displayLevel = 0;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -182,7 +182,7 @@ void CDFTDoc::OnUpdateLevel1(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel2()
 {
 	displayLevel = 1;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -196,7 +196,7 @@ void CDFTDoc::OnUpdateLevel2(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel3()
 {
 	displayLevel = 2;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -210,7 +210,7 @@ void CDFTDoc::OnUpdateLevel3(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel4()
 {
 	displayLevel = 3;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -224,7 +224,7 @@ void CDFTDoc::OnUpdateLevel4(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel5()
 {
 	displayLevel = 4;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -238,7 +238,7 @@ void CDFTDoc::OnUpdateLevel5(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel6()
 {
 	displayLevel = 5;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -252,7 +252,7 @@ void CDFTDoc::OnUpdateLevel6(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel7()
 {
 	displayLevel = 6;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -266,7 +266,7 @@ void CDFTDoc::OnUpdateLevel7(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel8()
 {
 	displayLevel = 7;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -280,7 +280,7 @@ void CDFTDoc::OnUpdateLevel8(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel9()
 {
 	displayLevel = 8;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
@@ -294,7 +294,7 @@ void CDFTDoc::OnUpdateLevel9(CCmdUI *pCmdUI)
 void CDFTDoc::OnLevel10()
 {
 	displayLevel = 9;
-	UpdateAllViews(NULL);
+	UpdateAllViews(nullptr);
 }
 
 
