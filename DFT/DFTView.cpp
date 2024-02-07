@@ -543,11 +543,11 @@ void CDFTView::GrabResultsFromDoc()
 
 		dataImage[state]->AllocateScalars(VTK_FLOAT, 1);
 
-		unsigned int index = 0;
+		int index = 0;
 		results.maxs[state] = 0;
-		for (unsigned int i = 0; i < results.realSpaceCell.GetSamples().X; ++i)
-			for (unsigned int j = 0; j < results.realSpaceCell.GetSamples().Y; ++j)
-				for (unsigned int k = 0; k < results.realSpaceCell.GetSamples().Z; ++k)
+		for (int i = 0; i < results.realSpaceCell.GetSamples().X; ++i)
+			for (int j = 0; j < results.realSpaceCell.GetSamples().Y; ++j)
+				for (int k = 0; k < results.realSpaceCell.GetSamples().Z; ++k)
 				{
 					const double val = std::norm(results.wavefunctions[state](index));
 					dataImage[state]->SetScalarComponentFromDouble(i, j, k, 0, val);

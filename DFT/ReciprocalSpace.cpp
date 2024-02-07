@@ -13,28 +13,23 @@ namespace DFT {
 		Init(realSpaceCell);
 	}
 
-	ReciprocalSpaceCell::~ReciprocalSpaceCell()
-	{
-	}
-
-
 	void ReciprocalSpaceCell::Init(const RealSpaceCell& realSpaceCell, double MaxFraction)
 	{
 		const Vector3D<double>& dim = realSpaceCell.GetSize();
 		const double twopi = 2. * M_PI;
-		m_dim = Vector3D<double>(twopi / dim.X, twopi / dim.Y, twopi / dim.Z);
+		m_dim = Vector3D(twopi / dim.X, twopi / dim.Y, twopi / dim.Z);
 		volume = twopi * twopi * twopi / realSpaceCell.Volume();
 
 		Indices.resize(realSpaceCell.Samples(), 1); 
 		LatticeVectors.resize(realSpaceCell.Samples(), 1);
 		LatticeVectorsSquaredMagnitude.resize(realSpaceCell.Samples(), 1);
 
-		unsigned int i = 0;
-		const Vector3D<unsigned int>& samples = realSpaceCell.GetSamples();
+		int i = 0;
+		const Vector3D samples = realSpaceCell.GetSamples();
 
-		for (unsigned int val1 = 0; val1 < samples.X; ++val1)
-			for (unsigned int val2 = 0; val2 < samples.Y; ++val2)
-				for (unsigned int val3 = 0; val3 < samples.Z; ++val3)
+		for (int val1 = 0; val1 < samples.X; ++val1)
+			for (int val2 = 0; val2 < samples.Y; ++val2)
+				for (int val3 = 0; val3 < samples.Z; ++val3)
 				{
 					const Vector3D<int>& val = realSpaceCell.Indices(i);
 					const Vector3D<int> offset(val.X > static_cast<int>(samples.X/2) ? samples.X : 0, val.Y > static_cast<int>(samples.Y/2) ? samples.Y : 0, val.Z > static_cast<int>(samples.Z/2) ? samples.Z : 0);
@@ -56,11 +51,11 @@ namespace DFT {
 	void ReciprocalSpaceCell::Compress(const RealSpaceCell& realSpaceCell, double MaxFraction)
 	{
 		std::vector<int> edges;
-		const Vector3D<double> eS(realSpaceCell.GetSamples().X / 2. + 0.5, realSpaceCell.GetSamples().Y / 2. + 0.5, realSpaceCell.GetSamples().Z / 2. + 0.5);
+		const Vector3D eS(realSpaceCell.GetSamples().X / 2. + 0.5, realSpaceCell.GetSamples().Y / 2. + 0.5, realSpaceCell.GetSamples().Z / 2. + 0.5);
 
 		for (int i = 0; i < realSpaceCell.Indices.rows(); ++i)
 		{
-			const Vector3D<double> dif = eS - realSpaceCell.Indices(i);
+			const Vector3D dif(eS - realSpaceCell.Indices(i));
 
 			if (abs(dif.X) < 1 || abs(dif.Y) < 1 || abs(dif.Z) < 1)
 				edges.push_back(i);

@@ -9,7 +9,6 @@ namespace DFT {
 	{
 	public:
 		ReciprocalSpaceCell(const RealSpaceCell& realSpaceCell);
-		~ReciprocalSpaceCell();
 
 		void Init(const RealSpaceCell& realSpaceCell, double MaxFraction = 0.5);
 
@@ -22,9 +21,10 @@ namespace DFT {
 		Eigen::Matrix<double, Eigen::Dynamic, 1> LatticeVectorsSquaredMagnitude;
 
 		// active list and 'compressed' G2 containing the active values
-		std::vector<unsigned int> active;
+		std::vector<int> active;
 		Eigen::Matrix<double, Eigen::Dynamic, 1> LatticeVectorsSquaredMagnitudeCompressed;
-	protected:
+
+	private:
 		void Compress(const RealSpaceCell& realSpaceCell, double MaxFraction);
 
 		Vector3D<double> m_dim;

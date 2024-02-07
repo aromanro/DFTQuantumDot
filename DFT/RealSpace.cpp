@@ -10,21 +10,17 @@ namespace DFT {
 	{
 		Vector3D<double> spacing(m_dim.X / m_samples.X, m_dim.Y / m_samples.Y, m_dim.Z / m_samples.Z);
 
-		unsigned int i = 0;
+		int i = 0;
 
-		for (unsigned int val1 = 0; val1 < m_samples.X; ++val1)
-			for (unsigned int val2 = 0; val2 < m_samples.Y; ++val2)
-				for (unsigned int val3 = 0; val3 < m_samples.Z; ++val3)
+		for (int val1 = 0; val1 < m_samples.X; ++val1)
+			for (int val2 = 0; val2 < m_samples.Y; ++val2)
+				for (int val3 = 0; val3 < m_samples.Z; ++val3)
 				{
-					const Vector3D<unsigned int> val = Vector3D<unsigned int>(val1, val2, val3);
+					const Vector3D val(val1, val2, val3);
 					Indices(i) = val;
-					SamplePoints(i++) = Vector3D<double>(spacing.X * val.X, spacing.Y * val.Y, spacing.Z * val.Z);
+					SamplePoints(i++) = Vector3D(spacing.X * val.X, spacing.Y * val.Y, spacing.Z * val.Z);
 				}
 	}
 
-
-	RealSpaceCell::~RealSpaceCell()
-	{
-	}
 
 }
