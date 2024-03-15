@@ -1,10 +1,8 @@
 #pragma once
-#define _USE_MATH_DEFINES
-#include <math.h>
-
-#include <vector>
 
 #include "ExcCorBase.h"
+
+#include <vector>
 
 namespace DFT {
 
@@ -37,57 +35,65 @@ namespace DFT {
 		static constexpr double threeDivM_PI = 3. / M_PI;
 
 	public:
-		static std::vector<double> Vexc(const std::vector<double>& n)
+		static Eigen::MatrixXcd Vexc(const Eigen::MatrixXcd& n)
 		{
 			static const double	X1 = pow(3. / (2. * M_PI), 2. / 3.);  // Exchange energy coefficient
+			assert(n.cols() == 1);
 
-			std::vector<double> res;
-			res.reserve(n.size());
+			Eigen::MatrixXcd res(n.rows(), 1);
 
-			for (const auto ro : n)
+			for (int i = 0; i < sz; ++i)
 			{
+				const double ro = n(i, 0).real();
 				if (ro < 1E-18)
 				{
-					res.emplace_back(0.);
+					res(i, 0) = 0;
 					continue;
 				}
 
 				const double rs = pow(3. / (fourM_PI * ro), 1. / 3.);
+
+				// exchange
+				res(i, 0) = -X1 / rs;
+
+				// correlation
 				const double bprs = b / rs;
 				const double bprs2 = bprs / rs;
 
-				res.emplace_back(-X1 / rs // exchange
-					// correlation
-					+ a * log(1. + bprs + bprs / rs)
-					- a / (1. + bprs + bprs2) * (bprs + 2. * bprs2) * rs / 3.);
+				res(i, 0) += a * log(1. + bprs + bprs / rs)
+					- a / (1. + bprs + bprs2) * (bprs + 2. * bprs2) * rs / 3.;
 			}
 
 			return res;
 		}
 
 
-		static std::vector<double> eexcDif(const std::vector<double>& n)
+		static Eigen::MatrixXcd excDeriv(const Eigen::MatrixXcd& n)
 		{
 			static const double X1 = 0.25 * pow(3. / (2. * M_PI), 2. / 3.);  // Exchange energy coefficient
+			assert(n.cols() == 1);
 
-			std::vector<double> res;
-			res.reserve(n.size());
+			Eigen::MatrixXcd res(n.rows(), 1);
 
-			for (const auto ro : n)
+			for (int i = 0; i < sz; ++i)
 			{
+				const double ro = n(i, 0).real();
 				if (ro < 1E-18)
 				{
-					res.emplace_back(0.);
+					res(i, 0) = 0;
 					continue;
 				}
 
-				const double rs = pow(3. / (fourM_PI * ro), 1. / 3.);				
+				const double rs = pow(3. / (fourM_PI * ro), 1. / 3.);
+
+				// exchange
+				res(i, 0) = X1 / rs;
+
+				// correlation
 				const double bprs = b / rs;
 				const double bprs2 = bprs / rs;
 
-				res.emplace_back(X1 / rs // exchange
-					// correlation
-				    + a / (1. + bprs + bprs2) * (bprs + 2. * bprs2) * rs / 3.);
+				res(i, 0) += a / (1. + bprs + bprs2) * (bprs + 2. * bprs2) * rs / 3.;
 			}
 
 			return res;
