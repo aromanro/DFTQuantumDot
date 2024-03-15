@@ -3,10 +3,9 @@
 #include <cassert>
 #include <vector>
 
-#include "ExcCorBase.h"
+#include <sstream>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include "ExcCorBase.h"
 
 namespace DFT {
 
@@ -50,10 +49,10 @@ namespace DFT {
 			return A * (log(y * y / Y) + 2. * b / Q * atanQ - b * y0 / Y0 * (log(dify * dify / Y) + 2. * (b + 2. * y0) / Q * atanQ)); // B.5
 		}
 
-		inline static double ecDif(double y, double dify, double A, double y0, double b, double c, double Y0, double Y)
+		inline static double ecDif(double y, double dify, double A, double y0, double b, double c, double Y0,  double Y)
 		{
 			return A * (c * dify - b * y0 * y) / (dify * Y); // B.6
-
+			
 			// alternate formula to check if getting better results (not really):
 			/*
 			const double d = c * y0;
@@ -62,7 +61,7 @@ namespace DFT {
 			const double b3 = -1. / d;
 			const double y2 = y * y;
 			const double y3 = y2 * y;
-
+		
 			return A * (1. + b1 * y) / (1. + b1 * y + b2 * y2 + b3 * y3);
 			*/
 		}
@@ -71,62 +70,58 @@ namespace DFT {
 		//**********************************************************************************************************************************
 		// LSD code
 		//**********************************************************************************************************************************
-		static Eigen::MatrixXcd Vexc(const Eigen::MatrixXcd& n)
+		static std::vector<double> Vexc(const std::vector<double>& n)
 		{
 			static const double	X1 = pow(3. / (2. * M_PI), 2. * aThird);  // Exchange energy coefficient
-			assert(n.cols() == 1);
+							
+			std::vector<double> res;
+			res.reserve(n.size());
 
-			Eigen::MatrixXcd res(n.rows(), 1);
-
-			for (int i = 0; i < n.size(); ++i)
+			for (const auto ro : n)
 			{
-				const double ro = n(i, 0).real();
 				if (ro < 1E-18)
 				{
-					res(i, 0) = 0;
+					res.emplace_back(0.);
 					continue;
 				}
-
+				
 				const double rs = pow(3. / (fourM_PI*ro), aThird);
 				const double y = sqrt(rs);
 				const double Y = y * y + bP * y + cP;
-				const double dify = y - y0P;
 
-				res(i, 0) = -X1 / rs // exchange term
+				const double dify = y - y0P;
+				
+				res.emplace_back(-X1 / rs // exchange term
 					//the following make the Vc as in B.1
 					+ F(y, dify, AP, y0P, bP, cP, Y0P, Y) // B.5
-					- aThird * ecDif(y, dify, AP, y0P, bP, cP, Y0P, Y); // B.6
+					- aThird * ecDif(y, dify, AP, y0P, bP, cP, Y0P, Y)); // B.6
 			}
 
 			return res;
 		}
 
-
-
-		static Eigen::MatrixXcd excDeriv(const Eigen::MatrixXcd& n)
+		static std::vector<double> eexcDif(const std::vector<double>& n)
 		{
 			static const double X1 = 0.25 * pow(3. / (2.*M_PI), 2. * aThird);  // Exchange energy coefficient
-			assert(n.cols() == 1);
+				
+			std::vector<double> res;
+			res.reserve(n.size());
 
-			Eigen::MatrixXcd res(n.rows(), 1);
-
-			for (int i = 0; i < n.size(); ++i)
+			for (const auto ro : n)
 			{
-				const double ro = n(i, 0).real();
 				if (ro < 1E-18)
 				{
-					res(i, 0) = 0;
+					res.emplace_back(0.);
 					continue;
 				}
 
 				const double rs = pow(3. / (fourM_PI * ro), aThird);
-
 				const double y = sqrt(rs);
 				const double Y = y * y + bP * y + cP;
 				const double dify = y - y0P;
 
-				res(i, 0) = X1 / rs // exchange term
-					+ aThird * ecDif(y, dify, AP, y0P, bP, cP, Y0P, Y); // B.6
+				res.emplace_back(X1 / rs // exchange term
+					+ aThird * ecDif(y, dify, AP, y0P, bP, cP, Y0P, Y)); // B.6
 			}
 
 			return res;
@@ -136,31 +131,34 @@ namespace DFT {
 		// LSDA code
 		//**********************************************************************************************************************************
 
-		static Eigen::MatrixXcd Vexc(const Eigen::MatrixXcd& na, const Eigen::MatrixXcd& nb, Eigen::MatrixXcd& va, Eigen::MatrixXcd& vb)
+		static std::vector<double> Vexc(const std::vector<double>& na, const std::vector<double>& nb, std::vector<double>& va, std::vector<double>& vb)
 		{
-			assert(na.cols() == 1 && nb.cols() == 1 && va.cols() == 1 && vb.cols() == 1);
-
-			int sz = static_cast<int>(na.rows());
-			if (sz != nb.rows()) return {};
-
+			const int sz = static_cast<int>(na.size());
+			if (sz != nb.size()) return {};
+			
 			static const double	X1 = pow(3. / (2. * M_PI), 2. * aThird);  // Exchange energy coefficient - see eq 4 NIST, but it's arranged
 			static const double X2 = pow(2., aThird);
 			static const double X12 = X1 * X2;
 			static const double fdd = 4. / (9. * (pow(2., aThird) - 1.));
 
-			Eigen::MatrixXcd res(sz, 1);
+			std::vector<double> res;
+			res.reserve(sz);
 
-			va.resize(sz, 1);
-			vb.resize(sz, 1);
+			va.resize(0);
+			va.reserve(sz);
+			vb.resize(0);
+			vb.reserve(sz);
 
 			for (int i = 0; i < sz; ++i)
 			{
-				const double roa = na(i, 0).real();
-				const double rob = nb(i, 0).real();
+				const double roa = na[i];
+				const double rob = nb[i];
 				const double n = roa + rob;
 				if (n < 1E-18)
 				{
-					res(i, 0) = va(i, 0) = vb(i, 0) = 0;
+					res.emplace_back(0.);
+					va.emplace_back(0.);
+					vb.emplace_back(0.);
 					continue;
 				}
 
@@ -217,8 +215,10 @@ namespace DFT {
 				const double deriv = aThird * (ecpd // paramagnetic part
 					+ ecad * interp + eca * interpd);
 
-				res(i, 0) =
-					// the following two terms sum make the eq 7 from NIST
+				// derivative with respect to zeta
+				const double dterm = eca / fdd * (4. * beta * zeta3 * fval + opbz4 * dfval);
+
+				res.emplace_back(// the following two terms sum make the eq 7 from NIST
 					// paramagnetic part:
 					ecp
 					// the polarization part
@@ -228,43 +228,40 @@ namespace DFT {
 					//+ deltaecfp * fval * zeta4		
 
 					// derivative
-					-deriv;
+					-deriv);
 
-				// derivative with respect to zeta
-				const double dterm = eca / fdd * (4. * beta * zeta3 * fval + opbz4 * dfval);
+				va.emplace_back(exfa + res.back() + (1. - zeta) * dterm);
+				vb.emplace_back(exfb + res.back() - (1. + zeta) * dterm);
 
-				va(i, 0) = exfa + res(i, 0) + (1. - zeta) * dterm;
-				vb(i, 0) = exfb + res(i, 0) - (1. + zeta) * dterm;
-
-				res(i, 0) += exp + exdif * fval; // exchange term - eq 1 NIST
+				res.back() += (exp + exdif * fval); // exchange term - eq 1 NIST
 			}
 
 			return res;
 		}
 
-		static Eigen::MatrixXcd eexcDif(const Eigen::MatrixXcd& na, const Eigen::MatrixXcd& nb)
+		static std::vector<double> eexcDif(const std::vector<double>& na, const std::vector<double>& nb)
 		{
-			assert(na.cols() == 1 && nb.cols() == 1);
-
-			int sz = static_cast<int>(na.rows());
-			if (sz != nb.rows()) return {};
+			const int sz = static_cast<int>(na.size());
+			if (sz != nb.size()) return {};
 
 			static const double	X1d = 0.25 * pow(3. / (2. * M_PI), 2. * aThird);  // Exchange energy coefficient
 			static const double X2d = pow(2., aThird);
 			static const double fdd = 4. / (9. * (pow(2., aThird) - 1.));
 
-			Eigen::MatrixXcd res(sz, 1);
+			std::vector<double> res;
+			res.reserve(sz);
 
 			for (int i = 0; i < sz; ++i)
 			{
-				const double roa = na(i, 0).real();
-				const double rob = nb(i, 0).real();
+				const double roa = na[i];
+				const double rob = nb[i];
 				const double n = roa + rob;
 				if (n < 1E-18)
 				{
-					res(i, 0) = 0;
+					res.emplace_back(0.);
 					continue;
 				}
+
 
 				const double rs = pow(3. / (fourM_PI * n), aThird);
 
@@ -298,7 +295,7 @@ namespace DFT {
 				const double beta = fdd * deltaecfp / eca - 1.; // eq. 9 NIST
 				const double opbz4 = 1 + beta * zeta4;
 				const double interp = fval / fdd * opbz4; // eq 8 NIST without alphac
-				const double deltaec = eca * interp; // eq. 8 NIST
+				//const double deltaec = eca * interp; // eq. 8 NIST
 
 				const double betad = fdd / eca * (ecfd - ecpd - ecad * deltaecfp / eca);
 				const double interpd = fval / fdd * zeta4 * betad;
@@ -306,13 +303,12 @@ namespace DFT {
 				const double deriv = aThird * (ecpd // paramagnetic part
 					+ ecad * interp + eca * interpd);
 
-				res(i, 0) = expd + (exfd - expd) * fval // exchange term
+				res.emplace_back(expd + (exfd - expd) * fval // exchange term
 					// correlation term:
-					+ deriv;
+					+ deriv);
 			}
 
 			return res;
 		}
 	};
-
 }
