@@ -12,7 +12,7 @@ namespace DFT {
 
 		void Init(const RealSpaceCell& realSpaceCell, double MaxFraction = 0.5);
 
-		const Vector3D<double>& GetSize() { return m_dim; }
+		const Vector3D<double>& GetSize() const { return m_dim; }
 
 		double Volume() const { return volume; }
 

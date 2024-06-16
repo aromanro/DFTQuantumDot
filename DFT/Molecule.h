@@ -100,7 +100,7 @@ namespace DFT {
 			densityReciprocal *= dftSolver.realSpaceCell.SampleVolume();
 			fieldReciprocal  /= dftSolver.realSpaceCell.Samples();
 		
-			const double numericalResult = (fieldReciprocal.adjoint() * densityReciprocal)(0).real()/2.;
+			const double numericalResult = (fieldReciprocal.adjoint() * densityReciprocal)(0).real() * 0.5;
 
 			double Uself = 0;			
 			for (auto z : Z) Uself += z * z / (2 * sqrt(M_PI) * sigma);

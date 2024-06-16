@@ -85,7 +85,7 @@ namespace DFT {
 		}
 
 
-		inline Eigen::MatrixXcd cJdagOcJ(const Eigen::MatrixXcd& in)
+		inline Eigen::MatrixXcd cJdagOcJ(const Eigen::MatrixXcd& in) const
 		{
 			return realSpaceCell.SampleVolume() * in;
 		}

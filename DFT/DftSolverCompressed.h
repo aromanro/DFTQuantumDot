@@ -18,7 +18,7 @@ namespace DFT {
 			fullcIcol = Eigen::MatrixXcd::Zero(_Mybase::realSpaceCell.Samples(), 1);
 		}
 
-		inline Eigen::MatrixXcd GetRandomState()
+		inline Eigen::MatrixXcd GetRandomState() const
 		{
 			Eigen::MatrixXcd W = Eigen::MatrixXd::Random(_Mybase::reciprocalCell.active.size(), _Mybase::m_Ns);
 			return _Mybase::orthogonalize(W);
@@ -30,7 +30,7 @@ namespace DFT {
 		}
 
 
-		inline Eigen::MatrixXcd GetInitialState(double molSize)
+		inline Eigen::MatrixXcd GetInitialState(double molSize) const
 		{
 			Eigen::MatrixXcd W = Eigen::MatrixXd::Random(_Mybase::realSpaceCell.Samples(), _Mybase::m_Ns);
 
@@ -69,7 +69,7 @@ namespace DFT {
 		}
 
 
-		inline Eigen::MatrixXcd GetInitialState(const Eigen::MatrixXcd& Wapprox, unsigned int res)
+		inline Eigen::MatrixXcd GetInitialState(const Eigen::MatrixXcd& Wapprox, unsigned int res) const
 		{
 			Eigen::MatrixXcd W(_Mybase::realSpaceCell.Samples(), _Mybase::m_Ns);
 
