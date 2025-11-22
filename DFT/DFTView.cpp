@@ -158,7 +158,7 @@ void CDFTView::OnDraw(CDC* pDC)
 		int cyWindow = size[1];
 		const float fx = static_cast<float>(cxPage) / static_cast<float>(cxWindow);
 		const float fy = static_cast<float>(cyPage) / static_cast<float>(cyWindow);
-		const float scale = min(fx, fy);
+		const float scale = std::min(fx, fy);
 		const int x = static_cast<int>(scale * static_cast<float>(cxWindow));
 		const int y = static_cast<int>(scale * static_cast<float>(cyWindow));
 

@@ -65,7 +65,7 @@ namespace DFT {
 		{
 			double G2max = LatticeVectorsSquaredMagnitude(edges[0]);
 			for (int i = 1; i < edges.size(); ++i)
-				G2max = min(G2max, LatticeVectorsSquaredMagnitude(edges[i]));
+				G2max = std::min(G2max, LatticeVectorsSquaredMagnitude(edges[i]));
 
 			G2max *= MaxFraction * MaxFraction;
 

@@ -1,8 +1,8 @@
 #pragma once
 
-
+#undef min
+#undef max
 #include <eigen/eigen>
-
 
 #include "Vector3D.h"
 

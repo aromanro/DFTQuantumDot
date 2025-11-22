@@ -4,13 +4,15 @@
 #include <math.h>
 
 #include <atomic>
+#include <cassert>
 
 #include "FFT.h"
 #include "RealSpace.h"
 #include "ReciprocalSpace.h"
 
+#undef min
+#undef max
 #include <unsupported/Eigen/MatrixFunctions>
-
 
 #include "ExcCor.h"
 

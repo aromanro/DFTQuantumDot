@@ -1,6 +1,7 @@
 #pragma once
 
-
+#undef min
+#undef max
 #include <eigen/eigen>
 
 #include "Options.h"
