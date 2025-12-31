@@ -42,7 +42,7 @@ namespace DFT {
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
-			for (int i = 0; i < sz; ++i)
+			for (int i = 0; i < n.size(); ++i)
 			{
 				const double ro = n(i, 0).real();
 				if (ro < 1E-18)
@@ -75,7 +75,7 @@ namespace DFT {
 
 			Eigen::MatrixXcd res(n.rows(), 1);
 
-			for (int i = 0; i < sz; ++i)
+			for (int i = 0; i < n.size(); ++i)
 			{
 				const double ro = n(i, 0).real();
 				if (ro < 1E-18)

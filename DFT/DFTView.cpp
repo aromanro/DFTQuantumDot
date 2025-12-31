@@ -400,8 +400,8 @@ LRESULT CDFTView::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		if (iren && iren->GetInitialized() && GetSafeHwnd())
 		{
-			LRESULT res  = vtkHandleMessage(GetSafeHwnd(), message, wParam, lParam);
-			//LRESULT res = vtkHandleMessage2(GetSafeHwnd(), message, wParam, lParam, iren);
+			//LRESULT res  = vtkHandleMessage(GetSafeHwnd(), message, wParam, lParam);
+			LRESULT res = vtkHandleMessage2(GetSafeHwnd(), message, wParam, lParam, iren);
 			if (message != WM_TIMER || wParam != timer) return res;
 		}
 	}
