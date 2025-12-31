@@ -14,7 +14,7 @@ The project compiles on Windows with Visual Studio 2026 (the code can be compile
 ### LIBRARIES
 
 The program requires mfc and the other typical VC++ runtime libraries.
-Additional libraries needed are FFTW http://www.fftw.org/ and VTK http://www.fftw.org/.
+Additional libraries needed are FFTW http://www.fftw.org/ and VTK https://vtk.org/.
 
 ### PROGRAM IN ACTION
 
